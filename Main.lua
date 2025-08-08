@@ -25,7 +25,6 @@ local ANIMATION_STEP_DELAY = 0.03
 local FLY_ANIMATION_ID = 93954221593805
 local DEBUG_MODE = true
 local DEBUG_LOG_MAX = 50
-local MIN_WINDOW_SIZE = Vector2.new(400, 300) -- Минимальный размер окна
 
 -- Глобальные переменные
 local debugLogs = {}
@@ -40,8 +39,8 @@ local performanceStats = {
 
 -- Основное окно
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 450, 0, 500) -- Уменьшенный размер
-mainFrame.Position = UDim2.new(0.5, -225, 0.5, -250)
+mainFrame.Size = UDim2.new(0, 600, 0, 700)
+mainFrame.Position = UDim2.new(0.5, -300, 0.5, -350)
 mainFrame.BackgroundColor3 = Color3.fromRGB(212, 208, 200)
 mainFrame.BorderSizePixel = 0
 mainFrame.ClipsDescendants = true
@@ -60,7 +59,7 @@ local titleLabel = Instance.new("TextLabel")
 titleLabel.Size = UDim2.new(1, -60, 1, 0)
 titleLabel.Position = UDim2.new(0, 5, 0, 0)
 titleLabel.BackgroundTransparency = 1
-titleLabel.Text = "AdminScript by IRIS_FECOKEV"
+titleLabel.Text = "AdminScript Reborn by IRIS_FECOKEV"
 titleLabel.TextColor3 = Color3.new(1, 1, 1)
 titleLabel.Font = Enum.Font.SourceSansBold
 titleLabel.TextSize = 14
@@ -98,24 +97,24 @@ tabBar.Parent = mainFrame
 
 local function createTabButton(name, posX)
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0, 70, 0, 22) -- Уменьшенные кнопки
+    btn.Size = UDim2.new(0, 80, 0, 22)
     btn.Position = UDim2.new(0, posX, 0, 0)
     btn.BackgroundColor3 = Color3.fromRGB(236, 233, 216)
     btn.BorderColor3 = Color3.new(0, 0, 0)
     btn.Text = name
     btn.TextColor3 = Color3.new(0, 0, 0)
     btn.Font = Enum.Font.SourceSans
-    btn.TextSize = 12
+    btn.TextSize = 14
     btn.Visible = false
     btn.Parent = tabBar
     return btn
 end
 
 local mainTab = createTabButton("Основные", 5)
-local playerTab = createTabButton("Игроки", 80)
-local visualTab = createTabButton("Визуал", 155)
-local debugTab = createTabButton("Дебаг", 230)
-local settingsTab = createTabButton("Настройки", 305)
+local playerTab = createTabButton("Игроки", 90)
+local visualTab = createTabButton("Визуал", 175)
+local debugTab = createTabButton("Дебаг", 260)
+local settingsTab = createTabButton("Настройки", 345)
 
 -- Контейнеры для вкладок
 local tabContainer = Instance.new("Frame")
@@ -160,27 +159,27 @@ settingsContent.Parent = tabContainer
 -- Ярлык в стиле Windows XP (внизу слева)
 local taskbarButton = Instance.new("TextButton")
 taskbarButton.Name = "TaskbarButton"
-taskbarButton.Size = UDim2.new(0, 130, 0, 28) -- Уменьшенный размер
-taskbarButton.Position = UDim2.new(0, 10, 1, -33)
+taskbarButton.Size = UDim2.new(0, 150, 0, 30)
+taskbarButton.Position = UDim2.new(0, 10, 1, -35)
 taskbarButton.BackgroundColor3 = Color3.fromRGB(0, 14, 122)
 taskbarButton.BorderSizePixel = 0
 taskbarButton.Text = "AdminScript"
 taskbarButton.TextColor3 = Color3.new(1, 1, 1)
 taskbarButton.Font = Enum.Font.SourceSansBold
-taskbarButton.TextSize = 12
+taskbarButton.TextSize = 14
 taskbarButton.Visible = false
 taskbarButton.Parent = gui
 
 -- Переработанная функция создания кнопок
 local function createButton(name, sizeY, withState)
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, -10, 0, sizeY or 30) -- Уменьшенная высота
+    btn.Size = UDim2.new(1, -10, 0, sizeY or 35)
     btn.BackgroundColor3 = Color3.fromRGB(236, 233, 216)
     btn.BorderColor3 = Color3.new(0, 0, 0)
     btn.Text = name
     btn.TextColor3 = Color3.new(0, 0, 0)
     btn.Font = Enum.Font.SourceSans
-    btn.TextSize = 14
+    btn.TextSize = 16
     btn.AutoButtonColor = false
     btn.LayoutOrder = 1
     btn.Visible = false
@@ -190,12 +189,12 @@ local function createButton(name, sizeY, withState)
     if withState then
         stateIndicator = Instance.new("TextLabel")
         stateIndicator.Name = "StateIndicator"
-        stateIndicator.Size = UDim2.new(0, 30, 1, -4) -- Уменьшенный размер
-        stateIndicator.Position = UDim2.new(1, -35, 0, 2)
+        stateIndicator.Size = UDim2.new(0, 40, 1, -4)
+        stateIndicator.Position = UDim2.new(1, -45, 0, 2)
         stateIndicator.Text = ""
         stateIndicator.TextColor3 = Color3.new(0, 0.5, 0)
         stateIndicator.Font = Enum.Font.SourceSansBold
-        stateIndicator.TextSize = 12
+        stateIndicator.TextSize = 14
         stateIndicator.BackgroundTransparency = 1
         stateIndicator.Visible = false
         stateIndicator.Parent = btn
@@ -223,139 +222,6 @@ local function createButton(name, sizeY, withState)
             stateIndicator.Visible = isActive
             stateIndicator.Text = isActive and "ON" or ""
         end
-    end
-end
-
--- Система изменения размера окна
-local resizeHandles = {}
-local resizeDirections = {
-    Top = {axis = "Y", edge = "Top", cursor = "SizeNS"},
-    Bottom = {axis = "Y", edge = "Bottom", cursor = "SizeNS"},
-    Left = {axis = "X", edge = "Left", cursor = "SizeWE"},
-    Right = {axis = "X", edge = "Right", cursor = "SizeWE"},
-    TopLeft = {axis = "Both", edge = "TopLeft", cursor = "SizeNWSE"},
-    TopRight = {axis = "Both", edge = "TopRight", cursor = "SizeNESW"},
-    BottomLeft = {axis = "Both", edge = "BottomLeft", cursor = "SizeNESW"},
-    BottomRight = {axis = "Both", edge = "BottomRight", cursor = "SizeNWSE"}
-}
-
-local function createResizeHandle(name, size, position, cursor)
-    local handle = Instance.new("Frame")
-    handle.Name = name .. "ResizeHandle"
-    handle.Size = size
-    handle.Position = position
-    handle.BackgroundTransparency = 1
-    handle.ZIndex = 10
-    handle.Visible = false
-    handle.Parent = mainFrame
-    
-    local connection
-    handle.MouseEnter:Connect(function()
-        UserInputService.OverrideMouseIconBehavior = Enum.OverrideMouseIconBehavior.ForceShow
-        UserInputService.MouseIcon = "rbxasset://SystemCursors/" .. cursor
-    end)
-    
-    handle.MouseLeave:Connect(function()
-        if not connection then
-            UserInputService.OverrideMouseIconBehavior = Enum.OverrideMouseIconBehavior.None
-        end
-    end)
-    
-    return handle
-end
-
--- Создаем ручки для изменения размера
-for name, data in pairs(resizeDirections) do
-    local size, position
-    local thickness = 6
-    
-    if name == "Top" then
-        size = UDim2.new(1, 0, 0, thickness)
-        position = UDim2.new(0, 0, 0, 0)
-    elseif name == "Bottom" then
-        size = UDim2.new(1, 0, 0, thickness)
-        position = UDim2.new(0, 0, 1, -thickness)
-    elseif name == "Left" then
-        size = UDim2.new(0, thickness, 1, 0)
-        position = UDim2.new(0, 0, 0, 0)
-    elseif name == "Right" then
-        size = UDim2.new(0, thickness, 1, 0)
-        position = UDim2.new(1, -thickness, 0, 0)
-    elseif name == "TopLeft" then
-        size = UDim2.new(0, thickness, 0, thickness)
-        position = UDim2.new(0, 0, 0, 0)
-    elseif name == "TopRight" then
-        size = UDim2.new(0, thickness, 0, thickness)
-        position = UDim2.new(1, -thickness, 0, 0)
-    elseif name == "BottomLeft" then
-        size = UDim2.new(0, thickness, 0, thickness)
-        position = UDim2.new(0, 0, 1, -thickness)
-    elseif name == "BottomRight" then
-        size = UDim2.new(0, thickness, 0, thickness)
-        position = UDim2.new(1, -thickness, 1, -thickness)
-    end
-    
-    resizeHandles[name] = createResizeHandle(name, size, position, data.cursor)
-end
-
--- Функция для изменения размера окна
-local function initResizeHandles()
-    for name, handle in pairs(resizeHandles) do
-        local data = resizeDirections[name]
-        
-        handle.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                local startPos = input.Position
-                local startSize = mainFrame.AbsoluteSize
-                local startPosAbs = mainFrame.AbsolutePosition
-                
-                local connection
-                connection = UserInputService.InputChanged:Connect(function(moveInput)
-                    if moveInput.UserInputType == Enum.UserInputType.MouseMovement then
-                        local delta = moveInput.Position - startPos
-                        local newSize = startSize
-                        local newPos = startPosAbs
-                        
-                        if data.axis == "X" or data.axis == "Both" then
-                            if name:find("Left") then
-                                local widthChange = -delta.X
-                                local newWidth = math.max(MIN_WINDOW_SIZE.X, startSize.X + widthChange)
-                                newSize = Vector2.new(newWidth, newSize.Y)
-                                newPos = Vector2.new(startPosAbs.X + delta.X, newPos.Y)
-                            elseif name:find("Right") then
-                                local widthChange = delta.X
-                                newSize = Vector2.new(math.max(MIN_WINDOW_SIZE.X, startSize.X + widthChange), newSize.Y)
-                            end
-                        end
-                        
-                        if data.axis == "Y" or data.axis == "Both" then
-                            if name:find("Top") then
-                                local heightChange = -delta.Y
-                                local newHeight = math.max(MIN_WINDOW_SIZE.Y, startSize.Y + heightChange)
-                                newSize = Vector2.new(newSize.X, newHeight)
-                                newPos = Vector2.new(newPos.X, startPosAbs.Y + delta.Y)
-                            elseif name:find("Bottom") then
-                                local heightChange = delta.Y
-                                newSize = Vector2.new(newSize.X, math.max(MIN_WINDOW_SIZE.Y, startSize.Y + heightChange))
-                            end
-                        end
-                        
-                        mainFrame.Size = UDim2.new(0, newSize.X, 0, newSize.Y)
-                        mainFrame.Position = UDim2.new(0, newPos.X, 0, newPos.Y)
-                    end
-                end)
-                
-                local function endResize(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                        connection:Disconnect()
-                        UserInputService.OverrideMouseIconBehavior = Enum.OverrideMouseIconBehavior.None
-                        handle.MouseLeave:Wait()
-                    end
-                end
-                
-                UserInputService.InputEnded:Connect(endResize)
-            end
-        end)
     end
 end
 
@@ -472,7 +338,7 @@ end
 -- Система выбора игроков
 local selectedPlayers = {}
 local playerListFrame = Instance.new("ScrollingFrame")
-playerListFrame.Size = UDim2.new(1, -10, 1, -10)
+playerListFrame.Size = UDim2.new(1, -10, 0.7, 0)
 playerListFrame.Position = UDim2.new(0, 5, 0, 5)
 playerListFrame.BackgroundTransparency = 1
 playerListFrame.ScrollBarThickness = 8
@@ -491,7 +357,7 @@ local function updatePlayerList()
     for _, plr in ipairs(Players:GetPlayers()) do
         if plr ~= player then
             local playerFrame = Instance.new("Frame")
-            playerFrame.Size = UDim2.new(1, -10, 0, 25) -- Уменьшенная высота
+            playerFrame.Size = UDim2.new(1, -10, 0, 30)
             playerFrame.BackgroundTransparency = 1
             
             local playerName = Instance.new("TextLabel")
@@ -499,7 +365,7 @@ local function updatePlayerList()
             playerName.Text = plr.Name
             playerName.TextColor3 = Color3.new(0, 0, 0)
             playerName.Font = Enum.Font.SourceSans
-            playerName.TextSize = 12
+            playerName.TextSize = 14
             playerName.TextXAlignment = Enum.TextXAlignment.Left
             playerName.BackgroundTransparency = 1
             playerName.Parent = playerFrame
@@ -511,7 +377,7 @@ local function updatePlayerList()
             selectBtn.BackgroundColor3 = selectedPlayers[plr] and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(200, 200, 200)
             selectBtn.TextColor3 = Color3.new(0, 0, 0)
             selectBtn.Font = Enum.Font.SourceSansBold
-            selectBtn.TextSize = 12
+            selectBtn.TextSize = 14
             selectBtn.Parent = playerFrame
             
             selectBtn.MouseButton1Click:Connect(function()
@@ -653,12 +519,12 @@ local function logDebug(message)
         
         for i, log in ipairs(debugLogs) do
             local logLabel = Instance.new("TextLabel")
-            logLabel.Size = UDim2.new(1, 0, 0, 18) -- Уменьшенная высота
-            logLabel.Position = UDim2.new(0, 0, 0, (i-1)*18)
+            logLabel.Size = UDim2.new(1, 0, 0, 20)
+            logLabel.Position = UDim2.new(0, 0, 0, (i-1)*20)
             logLabel.Text = log
             logLabel.TextColor3 = Color3.new(0, 0, 0)
             logLabel.Font = Enum.Font.SourceSans
-            logLabel.TextSize = 12
+            logLabel.TextSize = 14
             logLabel.TextXAlignment = Enum.TextXAlignment.Left
             logLabel.BackgroundTransparency = 1
             logLabel.Parent = debugLogFrame
@@ -685,7 +551,7 @@ local function initDebugPanel()
     fpsLabel.Text = "FPS: 0"
     fpsLabel.TextColor3 = Color3.new(0, 0, 0)
     fpsLabel.Font = Enum.Font.SourceSansBold
-    fpsLabel.TextSize = 14
+    fpsLabel.TextSize = 16
     fpsLabel.Parent = statsFrame
     
     local pingLabel = Instance.new("TextLabel")
@@ -694,7 +560,7 @@ local function initDebugPanel()
     pingLabel.Text = "Ping: 0ms"
     pingLabel.TextColor3 = Color3.new(0, 0, 0)
     pingLabel.Font = Enum.Font.SourceSansBold
-    pingLabel.TextSize = 14
+    pingLabel.TextSize = 16
     pingLabel.Parent = statsFrame
     
     local memLabel = Instance.new("TextLabel")
@@ -703,7 +569,7 @@ local function initDebugPanel()
     memLabel.Text = "Memory: 0MB"
     memLabel.TextColor3 = Color3.new(0, 0, 0)
     memLabel.Font = Enum.Font.SourceSansBold
-    memLabel.TextSize = 14
+    memLabel.TextSize = 16
     memLabel.Parent = statsFrame
     
     debugLogFrame = Instance.new("Frame")
@@ -733,31 +599,283 @@ local function initDebugPanel()
     end)
 end
 
--- Визуальные функции для вкладки "Визуал"
-local function createVisualEffectButton(name, func)
-    local btn = createButton(name, 25, false)
-    btn.Parent = visualContent
-    btn.MouseButton1Click:Connect(func)
-    return btn
+-- Расширенные функции дебага
+local function showCollisionGeometry()
+    for _, part in ipairs(Workspace:GetDescendants()) do
+        if part:IsA("BasePart") and part.CanCollide then
+            local box = Instance.new("BoxHandleAdornment")
+            box.Adornee = part
+            box.AlwaysOnTop = true
+            box.ZIndex = 5
+            box.Size = part.Size
+            box.Transparency = 0.8
+            box.Color3 = Color3.new(0, 1, 0)
+            box.Parent = part
+            Debris:AddItem(box, 10)
+        end
+    end
+    logDebug("Показана геометрия коллизий")
 end
 
--- Настройки для вкладки "Настройки"
-local function createSetting(name, value)
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, 0, 0, 25) -- Уменьшенная высота
-    frame.BackgroundTransparency = 1
+local function showNetworkOwners()
+    for _, part in ipairs(Workspace:GetDescendants()) do
+        if part:IsA("BasePart") then
+            local owner = part:GetNetworkOwner()
+            if owner then
+                local billboard = Instance.new("BillboardGui")
+                billboard.Adornee = part
+                billboard.Size = UDim2.new(0, 100, 0, 40)
+                billboard.AlwaysOnTop = true
+                
+                local label = Instance.new("TextLabel")
+                label.Size = UDim2.new(1, 0, 1, 0)
+                label.Text = owner.Name
+                label.TextColor3 = Color3.new(1, 0, 0)
+                label.BackgroundTransparency = 1
+                label.Parent = billboard
+                
+                billboard.Parent = part
+                Debris:AddItem(billboard, 10)
+            end
+        end
+    end
+    logDebug("Показаны владельцы сетевых объектов")
+end
 
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(0.6, 0, 1, 0)
-    label.Text = name
-    label.TextColor3 = Color3.new(0, 0, 0)
-    label.Font = Enum.Font.SourceSans
-    label.TextSize = 12
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.BackgroundTransparency = 1
-    label.Parent = frame
+local function showPhysicsGroups()
+    for groupName, _ in pairs(PhysicsService:GetRegisteredCollisionGroups()) do
+        local parts = PhysicsService:GetCollisionGroupParts(groupName)
+        for _, part in ipairs(parts) do
+            local box = Instance.new("BoxHandleAdornment")
+            box.Adornee = part
+            box.AlwaysOnTop = true
+            box.ZIndex = 5
+            box.Size = part.Size
+            box.Transparency = 0.7
+            box.Color3 = Color3.new(math.random(), math.random(), math.random())
+            box.Parent = part
+            Debris:AddItem(box, 10)
+        end
+    end
+    logDebug("Показаны группы физики")
+end
 
-    return frame
+local function dumpInstanceTree(object, depth)
+    depth = depth or 0
+    local prefix = string.rep("  ", depth)
+    logDebug(prefix .. object:GetFullName() .. " (" .. object.ClassName .. ")")
+    
+    for _, child in ipairs(object:GetChildren()) do
+        dumpInstanceTree(child, depth + 1)
+    end
+end
+
+local function testNetworkLatency()
+    local start = os.clock()
+    -- Имитация сетевого запроса
+    wait(0.1)
+    local latency = (os.clock() - start) * 1000
+    logDebug("Сетевая задержка: " .. string.format("%.2f", latency) .. "ms")
+end
+
+local function stressTestPerformance()
+    logDebug("Начало стресс-теста производительности...")
+    local startTime = os.clock()
+    
+    local parts = {}
+    for i = 1, 100 do
+        local part = Instance.new("Part")
+        part.Position = Vector3.new(math.random(-50, 50), 10, math.random(-50, 50))
+        part.Parent = Workspace
+        table.insert(parts, part)
+    end
+    
+    for i = 1, 100 do
+        for _, part in ipairs(parts) do
+            part.Position += Vector3.new(0.1, 0, 0.1)
+        end
+        RunService.Heartbeat:Wait()
+    end
+    
+    for _, part in ipairs(parts) do
+        part:Destroy()
+    end
+    
+    local duration = os.clock() - startTime
+    logDebug("Стресс-тест завершен за " .. string.format("%.2f", duration) .. " секунд")
+end
+
+-- Новые функции
+local function infiniteJump()
+    player.Character:WaitForChild("Humanoid").UseJumpPower = true
+    UserInputService.JumpRequest:Connect(function()
+        player.Character.Humanoid:ChangeState("Jumping")
+    end)
+    logDebug("Бесконечный прыжок активирован")
+end
+
+local function changeGravity(value)
+    Workspace.Gravity = value
+    logDebug("Гравитация изменена на: " .. value)
+end
+
+local function setTimeOfDay(time)
+    Lighting.ClockTime = time
+    logDebug("Время суток установлено: " .. time)
+end
+
+local function ghostMode()
+    if player.Character then
+        for _, part in ipairs(player.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.Transparency = 0.7
+                part.CanCollide = false
+            end
+        end
+    end
+    logDebug("Режим призрака активирован")
+end
+
+local function espPlayers()
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if plr ~= player and plr.Character then
+            local head = plr.Character:FindFirstChild("Head")
+            if head then
+                local billboard = Instance.new("BillboardGui")
+                billboard.Name = "ESP"
+                billboard.Adornee = head
+                billboard.Size = UDim2.new(0, 100, 0, 40)
+                billboard.StudsOffset = Vector3.new(0, 2, 0)
+                billboard.AlwaysOnTop = true
+                
+                local nameLabel = Instance.new("TextLabel")
+                nameLabel.Size = UDim2.new(1, 0, 0.5, 0)
+                nameLabel.Text = plr.Name
+                nameLabel.TextColor3 = Color3.new(1, 1, 0)
+                nameLabel.BackgroundTransparency = 1
+                nameLabel.Parent = billboard
+                
+                local healthLabel = Instance.new("TextLabel")
+                healthLabel.Size = UDim2.new(1, 0, 0.5, 0)
+                healthLabel.Position = UDim2.new(0, 0, 0.5, 0)
+                healthLabel.Text = "HP: 100"
+                healthLabel.TextColor3 = Color3.new(0, 1, 0)
+                healthLabel.BackgroundTransparency = 1
+                healthLabel.Parent = billboard
+                
+                billboard.Parent = head
+                
+                -- Обновление здоровья
+                local humanoid = plr.Character:FindFirstChild("Humanoid")
+                if humanoid then
+                    humanoid:GetPropertyChangedSignal("Health"):Connect(function()
+                        healthLabel.Text = "HP: " .. math.floor(humanoid.Health)
+                    end)
+                end
+            end
+        end
+    end
+    logDebug("ESP игроков активировано")
+end
+
+local function removeESP()
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if plr.Character then
+            local head = plr.Character:FindFirstChild("Head")
+            if head then
+                for _, child in ipairs(head:GetChildren()) do
+                    if child.Name == "ESP" then
+                        child:Destroy()
+                    end
+                end
+            end
+        end
+    end
+    logDebug("ESP удалено")
+end
+
+local function speedHack(speed)
+    if player.Character then
+        local humanoid = player.Character:FindFirstChild("Humanoid")
+        if humanoid then
+            humanoid.WalkSpeed = speed
+        end
+    end
+    logDebug("Скорость изменена на: " .. speed)
+end
+
+local function teleportToPosition()
+    local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+    if root then
+        root.CFrame = root.CFrame + root.CFrame.LookVector * 50
+        logDebug("Телепортирован вперед на 50 юнитов")
+    end
+end
+
+local function spawnVehicle()
+    local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+    if root then
+        local vehicle = Instance.new("Part")
+        vehicle.Name = "AdminVehicle"
+        vehicle.Size = Vector3.new(4, 2, 6)
+        vehicle.Position = root.Position + root.CFrame.LookVector * 10
+        vehicle.Anchored = false
+        vehicle.CanCollide = true
+        vehicle.Color = Color3.new(0, 0.5, 1)
+        vehicle.Parent = Workspace
+        
+        local seat = Instance.new("Seat")
+        seat.Size = Vector3.new(2, 1, 2)
+        seat.Position = vehicle.Position + Vector3.new(0, 1.5, 0)
+        seat.Parent = vehicle
+        
+        local weld = Instance.new("Weld")
+        weld.Part0 = vehicle
+        weld.Part1 = seat
+        weld.C0 = CFrame.new(0, 1.5, 0)
+        weld.Parent = vehicle
+        
+        logDebug("Транспорт создан")
+    end
+end
+
+local function deleteAllObjects()
+    for _, obj in ipairs(Workspace:GetChildren()) do
+        if not obj:IsA("Terrain") and obj ~= player.Character then
+            obj:Destroy()
+        end
+    end
+    logDebug("Все объекты удалены")
+end
+
+local function createExplosion()
+    local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+    if root then
+        local explosion = Instance.new("Explosion")
+        explosion.Position = root.Position
+        explosion.BlastRadius = 20
+        explosion.BlastPressure = 100000
+        explosion.Parent = Workspace
+        logDebug("Создан взрыв")
+    end
+end
+
+local function freezeWorld()
+    for _, part in ipairs(Workspace:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.Anchored = true
+        end
+    end
+    logDebug("Мир заморожен")
+end
+
+local function unfreezeWorld()
+    for _, part in ipairs(Workspace:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.Anchored = false
+        end
+    end
+    logDebug("Мир разморожен")
 end
 
 -- Состояния функций
@@ -773,7 +891,7 @@ local activeStates = {
 
 -- Переработанная функция для кнопок с состоянием
 local function createStateButton(content, name, func, stateKey)
-    local btn, updateState = createButton(name, 25, true) -- Уменьшенная высота
+    local btn, updateState = createButton(name, nil, true) -- true указывает, что это кнопка с состоянием
     btn.Parent = content
     
     -- Инициализируем состояние
@@ -789,7 +907,7 @@ end
 
 -- Функция для обычных кнопок (без состояния)
 local function addButton(content, name, func)
-    local btn = createButton(name, 25, false) -- Уменьшенная высота
+    local btn = createButton(name, nil, false) -- false указывает, что это обычная кнопка
     btn.Parent = content
     btn.MouseButton1Click:Connect(func)
     return btn
@@ -888,7 +1006,7 @@ end
 
 -- Основные функции
 addButton(mainContent, "Обновить список игроков", updatePlayerList)
-addButton(mainContent, "Убить выбранных", function()
+addButton(mainContent, "Убить выбранных игроков", function()
     for plr, _ in pairs(selectedPlayers) do
         if plr.Character then
             local humanoid = plr.Character:FindFirstChild("Humanoid")
@@ -900,7 +1018,7 @@ addButton(mainContent, "Убить выбранных", function()
     logDebug("Убиты выбранные игроки")
 end)
 
-addButton(mainContent, "Телепорт к игроку", function()
+addButton(mainContent, "Телепортироваться к игроку", function()
     local target
     for plr, _ in pairs(selectedPlayers) do
         target = plr
@@ -932,52 +1050,104 @@ end)
 
 addButton(mainContent, "Заблокировать выбранных", freezeSelectedPlayers)
 addButton(mainContent, "Разблокировать выбранных", unfreezeSelectedPlayers)
+addButton(mainContent, "Телепорт вперед", teleportToPosition)
+addButton(mainContent, "Создать транспорт", spawnVehicle)
+addButton(mainContent, "Удалить всё", deleteAllObjects)
+addButton(mainContent, "Создать взрыв", createExplosion)
+addButton(mainContent, "Заморозить мир", freezeWorld)
+addButton(mainContent, "Разморозить мир", unfreezeWorld)
 
 -- Кнопки с состоянием
 createStateButton(mainContent, "Летание", toggleFly, "Fly")
 createStateButton(mainContent, "Ноклип", toggleNoclip, "Noclip")
 createStateButton(mainContent, "Бессмертие", toggleGodMode, "GodMode")
 createStateButton(mainContent, "Бесконечный прыжок", toggleInfiniteJump, "InfiniteJump")
+createStateButton(mainContent, "Режим призрака", toggleGhostMode, "GhostMode")
 
--- Визуальные функции (вкладка "Визуал")
-createVisualEffectButton("Режим хитбоксов: Весь", function()
+-- Визуальные функции
+createStateButton(visualContent, "Показать хитбоксы", toggleHitbox, "Hitbox")
+createStateButton(visualContent, "Показать ESP", toggleESP, "ESP")
+
+addButton(visualContent, "Режим хитбоксов: Весь", function()
     setHitboxMode(1)
     logDebug("Хитбоксы: весь персонаж")
 end)
 
-createVisualEffectButton("Режим хитбоксов: Части", function()
+addButton(visualContent, "Режим хитбоксов: Части", function()
     setHitboxMode(2)
     logDebug("Хитбоксы: части тела")
 end)
 
-createVisualEffectButton("Скорость x2", function()
+addButton(visualContent, "Скорость x2", function()
     speedHack(32)
 end)
 
-createVisualEffectButton("Скорость x5", function()
+addButton(visualContent, "Скорость x5", function()
     speedHack(80)
 end)
 
-createVisualEffectButton("День", function()
+addButton(visualContent, "День", function()
     setTimeOfDay(12)
 end)
 
-createVisualEffectButton("Ночь", function()
+addButton(visualContent, "Ночь", function()
     setTimeOfDay(0)
 end)
 
-createVisualEffectButton("Лунная гравитация", function()
+addButton(visualContent, "Гравитация Луны", function()
     changeGravity(10)
 end)
 
-createStateButton(visualContent, "Показать хитбоксы", toggleHitbox, "Hitbox")
-createStateButton(visualContent, "Показать ESP", toggleESP, "ESP")
+-- Дебаг-функции
+addButton(debugContent, "Показать геометрию коллизий", showCollisionGeometry)
+addButton(debugContent, "Показать владельцев объектов", showNetworkOwners)
+addButton(debugContent, "Показать группы физики", showPhysicsGroups)
+addButton(debugContent, "Дамп иерархии Workspace", function()
+    logDebug("Начало дампа иерархии Workspace...")
+    dumpInstanceTree(Workspace)
+    logDebug("Дамп иерархии Workspace завершен")
+end)
+addButton(debugContent, "Тест сетевой задержки", testNetworkLatency)
+addButton(debugContent, "Стресс-тест производительности", stressTestPerformance)
+addButton(debugContent, "Создать 100 кубов", function()
+    for i = 1, 100 do
+        local part = Instance.new("Part")
+        part.Position = Vector3.new(math.random(-50, 50), 10, math.random(-50, 50))
+        part.Parent = Workspace
+    end
+    logDebug("Создано 100 кубов")
+end)
 
--- Настройки (вкладка "Настройки")
-local autoOpenSetting = createSetting("Авто-открытие при запуске", settings.AutoOpen)
+-- Настройки
+local settings = {
+    AutoOpen = true,
+    ThemeColor = Color3.fromRGB(0, 14, 122)
+}
+
+local function createSetting(name)
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, 0, 0, 30)
+    frame.BackgroundTransparency = 1
+
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(0.6, 0, 1, 0)
+    label.Text = name
+    label.TextColor3 = Color3.new(0, 0, 0)
+    label.Font = Enum.Font.SourceSans
+    label.TextSize = 14
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.BackgroundTransparency = 1
+    label.Parent = frame
+
+    return frame
+end
+
+local autoOpenSetting = createSetting("Авто-открытие при запуске")
+autoOpenSetting.Visible = false
 autoOpenSetting.Parent = settingsContent
 
-local flySpeedSetting = createSetting("Скорость полёта: " .. flySpeed, flySpeed)
+local flySpeedSetting = createSetting("Скорость полёта: " .. flySpeed)
+flySpeedSetting.Visible = false
 flySpeedSetting.Parent = settingsContent
 
 local autoOpenToggle = Instance.new("TextButton")
@@ -987,7 +1157,7 @@ autoOpenToggle.Text = settings.AutoOpen and "ON" or "OFF"
 autoOpenToggle.TextColor3 = settings.AutoOpen and Color3.new(0, 0.5, 0) or Color3.new(0.5, 0, 0)
 autoOpenToggle.BackgroundColor3 = Color3.fromRGB(236, 233, 216)
 autoOpenToggle.BorderColor3 = Color3.new(0, 0, 0)
-autoOpenToggle.Visible = true
+autoOpenToggle.Visible = false
 autoOpenToggle.Parent = autoOpenSetting
 
 autoOpenToggle.MouseButton1Click:Connect(function()
@@ -1004,28 +1174,8 @@ flySpeedLabel.Text = tostring(flySpeed)
 flySpeedLabel.TextColor3 = Color3.new(0, 0, 0)
 flySpeedLabel.BackgroundColor3 = Color3.fromRGB(236, 233, 216)
 flySpeedLabel.BorderColor3 = Color3.new(0, 0, 0)
-flySpeedLabel.Visible = true
+flySpeedLabel.Visible = false
 flySpeedLabel.Parent = flySpeedSetting
-
--- Дебаг-функции
-addButton(debugContent, "Показать коллизии", showCollisionGeometry)
-addButton(debugContent, "Показать владельцев", showNetworkOwners)
-addButton(debugContent, "Показать группы физики", showPhysicsGroups)
-addButton(debugContent, "Дамп иерархии", function()
-    logDebug("Начало дампа иерархии Workspace...")
-    dumpInstanceTree(Workspace)
-    logDebug("Дамп иерархии Workspace завершен")
-end)
-addButton(debugContent, "Тест задержки", testNetworkLatency)
-addButton(debugContent, "Стресс-тест", stressTestPerformance)
-addButton(debugContent, "Создать 100 кубов", function()
-    for i = 1, 100 do
-        local part = Instance.new("Part")
-        part.Position = Vector3.new(math.random(-50, 50), 10, math.random(-50, 50))
-        part.Parent = Workspace
-    end
-    logDebug("Создано 100 кубов")
-end)
 
 -- Анимация открытия окна
 local function openWindow()
@@ -1059,12 +1209,8 @@ local function openWindow()
                     child.Visible = true
                 end
             end
-            for name, handle in pairs(resizeHandles) do
-                handle.Visible = true
-            end
             updatePlayerList()
             initDebugPanel()
-            initResizeHandles() -- Инициализация ручек изменения размера
         end
 
         wait(ANIMATION_STEP_DELAY)
@@ -1080,9 +1226,6 @@ local function closeWindow()
                 if child:IsA("TextButton") then
                     child.Visible = false
                 end
-            end
-            for name, handle in pairs(resizeHandles) do
-                handle.Visible = false
             end
         elseif i == 7 then
             mainContent.Visible = false
@@ -1171,7 +1314,7 @@ end)
 -- Перетаскивание окна
 local dragging = false
 local dragOffset = Vector2.new(0, 0)
-local dragStartPos = UDim2.new(0.5, -225, 0.5, -250)
+local dragStartPos = UDim2.new(0.5, -300, 0.5, -350)
 
 titleBar.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -1218,5 +1361,5 @@ end)
 
 -- Инициализация дебаг-лога
 logDebug("Админ-панель инициализирована")
-logDebug("Версия: Compact v1.0")
+logDebug("Версия: Reborn v1.5")
 logDebug("Игрок: " .. player.Name)
