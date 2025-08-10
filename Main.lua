@@ -46,8 +46,8 @@ local settings = {
 
 -- Основное окно
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 450, 0, 500)
-mainFrame.Position = UDim2.new(0.5, -225, 0.5, -250)
+mainFrame.Size = UDim2.new(0, 500, 0, 550)  -- Увеличен размер окна
+mainFrame.Position = UDim2.new(0.5, -250, 0.5, -275)
 mainFrame.BackgroundColor3 = Color3.fromRGB(212, 208, 200)
 mainFrame.BorderSizePixel = 0
 mainFrame.ClipsDescendants = true
@@ -56,20 +56,20 @@ mainFrame.Parent = gui
 
 -- Заголовок окна
 local titleBar = Instance.new("Frame")
-titleBar.Size = UDim2.new(1, 0, 0, 24)
+titleBar.Size = UDim2.new(1, 0, 0, 30)  -- Увеличенная высота
 titleBar.BackgroundColor3 = Color3.fromRGB(0, 14, 122)
 titleBar.BorderSizePixel = 0
 titleBar.Visible = false
 titleBar.Parent = mainFrame
 
 local titleLabel = Instance.new("TextLabel")
-titleLabel.Size = UDim2.new(1, -60, 1, 0)
-titleLabel.Position = UDim2.new(0, 5, 0, 0)
+titleLabel.Size = UDim2.new(1, -70, 1, 0)
+titleLabel.Position = UDim2.new(0, 10, 0, 0)
 titleLabel.BackgroundTransparency = 1
-titleLabel.Text = "AdminScript by IRIS_FECOKEV"
+titleLabel.Text = "AdminScript Reborn Ultimate v2.0 by IRIS_FECOKEV"
 titleLabel.TextColor3 = Color3.new(1, 1, 1)
 titleLabel.Font = Enum.Font.SourceSansBold
-titleLabel.TextSize = 14
+titleLabel.TextSize = 16  -- Увеличенный размер
 titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 titleLabel.Visible = false
 titleLabel.Parent = titleBar
@@ -77,34 +77,34 @@ titleLabel.Parent = titleBar
 -- Кнопки управления окном (ВСЕГДА ВИДИМЫЕ)
 local minimizeBtn = Instance.new("TextButton")
 minimizeBtn.Name = "MinimizeBtn"
-minimizeBtn.Size = UDim2.new(0, 22, 0, 22)
-minimizeBtn.Position = UDim2.new(1, -50, 0, 1)
+minimizeBtn.Size = UDim2.new(0, 26, 0, 26)  -- Увеличен размер
+minimizeBtn.Position = UDim2.new(1, -55, 0, 2)
 minimizeBtn.BackgroundColor3 = Color3.fromRGB(0, 14, 122)
 minimizeBtn.BorderSizePixel = 0
 minimizeBtn.Text = "-"
 minimizeBtn.TextColor3 = Color3.new(1, 1, 1)
 minimizeBtn.Font = Enum.Font.SourceSansBold
-minimizeBtn.TextSize = 14
+minimizeBtn.TextSize = 20  -- Увеличенный размер
 minimizeBtn.Visible = true
 minimizeBtn.Parent = titleBar
 
 local closeBtn = Instance.new("TextButton")
 closeBtn.Name = "CloseBtn"
-closeBtn.Size = UDim2.new(0, 22, 0, 22)
-closeBtn.Position = UDim2.new(1, -25, 0, 1)
+closeBtn.Size = UDim2.new(0, 26, 0, 26)  -- Увеличен размер
+closeBtn.Position = UDim2.new(1, -28, 0, 2)
 closeBtn.BackgroundColor3 = Color3.fromRGB(0, 14, 122)
 closeBtn.BorderSizePixel = 0
 closeBtn.Text = "X"
 closeBtn.TextColor3 = Color3.new(1, 1, 1)
 closeBtn.Font = Enum.Font.SourceSansBold
-closeBtn.TextSize = 14
+closeBtn.TextSize = 18  -- Увеличенный размер
 closeBtn.Visible = true
 closeBtn.Parent = titleBar
 
 -- Панель вкладок
 local tabBar = Instance.new("Frame")
-tabBar.Size = UDim2.new(1, 0, 0, 24)
-tabBar.Position = UDim2.new(0, 0, 0, 24)
+tabBar.Size = UDim2.new(1, 0, 0, 30)  -- Увеличенная высота
+tabBar.Position = UDim2.new(0, 0, 0, 30)
 tabBar.BackgroundColor3 = Color3.fromRGB(192, 192, 192)
 tabBar.BorderSizePixel = 0
 tabBar.Visible = false
@@ -112,29 +112,29 @@ tabBar.Parent = mainFrame
 
 local function createTabButton(name, posX)
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0, 70, 0, 22)
-    btn.Position = UDim2.new(0, posX, 0, 0)
+    btn.Size = UDim2.new(0, 80, 0, 26)  -- Увеличен размер
+    btn.Position = UDim2.new(0, posX, 0, 2)
     btn.BackgroundColor3 = Color3.fromRGB(236, 233, 216)
     btn.BorderColor3 = Color3.new(0, 0, 0)
     btn.Text = name
     btn.TextColor3 = Color3.new(0, 0, 0)
-    btn.Font = Enum.Font.SourceSans
-    btn.TextSize = 12
+    btn.Font = Enum.Font.SourceSansBold
+    btn.TextSize = 14  -- Увеличенный размер
     btn.Visible = false
     btn.Parent = tabBar
     return btn
 end
 
-local mainTab = createTabButton("Основные", 5)
-local playerTab = createTabButton("Игроки", 80)
-local visualTab = createTabButton("Визуал", 155)
-local debugTab = createTabButton("Дебаг", 230)
-local settingsTab = createTabButton("Настройки", 305)
+local mainTab = createTabButton("Основные", 8)
+local playerTab = createTabButton("Игроки", 93)
+local visualTab = createTabButton("Визуал", 178)
+local debugTab = createTabButton("Дебаг", 263)
+local settingsTab = createTabButton("Настройки", 348)
 
 -- Контейнеры для вкладок
 local tabContainer = Instance.new("Frame")
-tabContainer.Size = UDim2.new(1, -10, 1, -58)
-tabContainer.Position = UDim2.new(0, 5, 0, 53)
+tabContainer.Size = UDim2.new(1, -10, 1, -70)  -- Скорректирован размер
+tabContainer.Position = UDim2.new(0, 5, 0, 65)
 tabContainer.BackgroundTransparency = 1
 tabContainer.Visible = false
 tabContainer.Parent = mainFrame
@@ -144,12 +144,12 @@ local function createContentFrame()
     local frame = Instance.new("ScrollingFrame")
     frame.Size = UDim2.new(1, 0, 1, 0)
     frame.BackgroundTransparency = 1
-    frame.ScrollBarThickness = 8
+    frame.ScrollBarThickness = 10  -- Увеличенная толщина
     frame.AutomaticCanvasSize = Enum.AutomaticSize.Y
     frame.Visible = false
 
     local listLayout = Instance.new("UIListLayout")
-    listLayout.Padding = UDim.new(0, 5)
+    listLayout.Padding = UDim.new(0, 12)  -- Увеличен отступ
     listLayout.SortOrder = Enum.SortOrder.LayoutOrder
     listLayout.Parent = frame
 
@@ -171,45 +171,51 @@ debugContent.Parent = tabContainer
 local settingsContent = createContentFrame()
 settingsContent.Parent = tabContainer
 
+-- UIListLayout для настроек
+local settingsListLayout = Instance.new("UIListLayout")
+settingsListLayout.Padding = UDim.new(0, 15)  -- Увеличен отступ
+settingsListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+settingsListLayout.Parent = settingsContent
+
 -- Ярлык в стиле Windows XP (внизу слева)
 local taskbarButton = Instance.new("TextButton")
 taskbarButton.Name = "TaskbarButton"
-taskbarButton.Size = UDim2.new(0, 130, 0, 28)
-taskbarButton.Position = UDim2.new(0, 10, 1, -33)
+taskbarButton.Size = UDim2.new(0, 150, 0, 35)  -- Увеличен размер
+taskbarButton.Position = UDim2.new(0, 10, 1, -38)
 taskbarButton.BackgroundColor3 = Color3.fromRGB(0, 14, 122)
 taskbarButton.BorderSizePixel = 0
 taskbarButton.Text = "AdminScript"
 taskbarButton.TextColor3 = Color3.new(1, 1, 1)
 taskbarButton.Font = Enum.Font.SourceSansBold
-taskbarButton.TextSize = 12
+taskbarButton.TextSize = 14  -- Увеличенный размер
 taskbarButton.Visible = false
 taskbarButton.Parent = gui
 
 -- Переработанная функция создания кнопок
 local function createButton(name, sizeY, withState)
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, -10, 0, sizeY or 30)
+    btn.Size = UDim2.new(1, -15, 0, sizeY or 38)  -- Увеличенная высота
     btn.BackgroundColor3 = Color3.fromRGB(236, 233, 216)
     btn.BorderColor3 = Color3.new(0, 0, 0)
     btn.Text = name
     btn.TextColor3 = Color3.new(0, 0, 0)
-    btn.Font = Enum.Font.SourceSans
-    btn.TextSize = 14
+    btn.Font = Enum.Font.SourceSansBold
+    btn.TextSize = 15  -- Увеличенный размер
     btn.AutoButtonColor = false
     btn.LayoutOrder = 1
     btn.Visible = false
 
-    -- Создаем элементы управления состоянием только если это кнопка с состоянием
+    -- Создаем элементы управления состоянием
     local stateIndicator
     if withState then
         stateIndicator = Instance.new("TextLabel")
         stateIndicator.Name = "StateIndicator"
-        stateIndicator.Size = UDim2.new(0, 30, 1, -4)
-        stateIndicator.Position = UDim2.new(1, -35, 0, 2)
+        stateIndicator.Size = UDim2.new(0, 40, 1, -4)  -- Увеличен размер
+        stateIndicator.Position = UDim2.new(1, -45, 0, 2)
         stateIndicator.Text = ""
         stateIndicator.TextColor3 = Color3.new(0, 0.5, 0)
         stateIndicator.Font = Enum.Font.SourceSansBold
-        stateIndicator.TextSize = 12
+        stateIndicator.TextSize = 15  -- Увеличенный размер
         stateIndicator.BackgroundTransparency = 1
         stateIndicator.Visible = false
         stateIndicator.Parent = btn
@@ -231,7 +237,6 @@ local function createButton(name, sizeY, withState)
         highlight.Visible = false
     end)
     
-    -- Возвращаем кнопку и функцию для обновления состояния
     return btn, function(isActive)
         if withState and stateIndicator then
             stateIndicator.Visible = isActive
@@ -353,16 +358,16 @@ end
 -- Система выбора игроков (исправлено слипание)
 local selectedPlayers = {}
 local playerListFrame = Instance.new("ScrollingFrame")
-playerListFrame.Size = UDim2.new(1, -10, 1, -10)
-playerListFrame.Position = UDim2.new(0, 5, 0, 5)
+playerListFrame.Size = UDim2.new(1, -15, 1, -15)  -- Увеличены отступы
+playerListFrame.Position = UDim2.new(0, 8, 0, 8)
 playerListFrame.BackgroundTransparency = 1
-playerListFrame.ScrollBarThickness = 8
+playerListFrame.ScrollBarThickness = 10  -- Увеличенная толщина
 playerListFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
 playerListFrame.Visible = false
 playerListFrame.Parent = playerContent
 
 local playerListLayout = Instance.new("UIListLayout")
-playerListLayout.Padding = UDim.new(0, 10) -- Увеличено расстояние
+playerListLayout.Padding = UDim.new(0, 15)  -- Увеличен отступ
 playerListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 playerListLayout.Parent = playerListFrame
 
@@ -372,16 +377,16 @@ local function updatePlayerList()
     for _, plr in ipairs(Players:GetPlayers()) do
         if plr ~= player then
             local playerFrame = Instance.new("Frame")
-            playerFrame.Size = UDim2.new(1, -10, 0, 40) -- Увеличена высота
+            playerFrame.Size = UDim2.new(1, -10, 0, 50)  -- Увеличенная высота
             playerFrame.BackgroundTransparency = 1
-            playerFrame.LayoutOrder = 1
+            playerFrame.LayoutOrder = #playerListFrame:GetChildren() + 1
             
             local playerName = Instance.new("TextLabel")
             playerName.Size = UDim2.new(1, 0, 0.5, 0)
             playerName.Text = plr.Name
             playerName.TextColor3 = Color3.new(0, 0, 0)
             playerName.Font = Enum.Font.SourceSansBold
-            playerName.TextSize = 14
+            playerName.TextSize = 15  -- Увеличенный размер
             playerName.TextXAlignment = Enum.TextXAlignment.Left
             playerName.BackgroundTransparency = 1
             playerName.Parent = playerFrame
@@ -393,7 +398,7 @@ local function updatePlayerList()
             selectBtn.BackgroundColor3 = selectedPlayers[plr] and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(200, 200, 200)
             selectBtn.TextColor3 = Color3.new(0, 0, 0)
             selectBtn.Font = Enum.Font.SourceSansBold
-            selectBtn.TextSize = 12
+            selectBtn.TextSize = 14  -- Увеличенный размер
             selectBtn.Parent = playerFrame
             
             selectBtn.MouseButton1Click:Connect(function()
@@ -407,7 +412,7 @@ local function updatePlayerList()
     end
 end
 
--- Система заморозки с сохранением позиции
+-- Система заморозки
 local frozenPlayers = {}
 local freezeLoop = RunService.Heartbeat:Connect(function()
     for plr, data in pairs(frozenPlayers) do
@@ -463,12 +468,12 @@ local function logDebug(message)
         
         for i, log in ipairs(debugLogs) do
             local logLabel = Instance.new("TextLabel")
-            logLabel.Size = UDim2.new(1, 0, 0, 18)
-            logLabel.Position = UDim2.new(0, 0, 0, (i-1)*18)
+            logLabel.Size = UDim2.new(1, 0, 0, 20)  -- Увеличенная высота
+            logLabel.Position = UDim2.new(0, 0, 0, (i-1)*20)
             logLabel.Text = log
             logLabel.TextColor3 = Color3.new(0, 0, 0)
             logLabel.Font = Enum.Font.SourceSans
-            logLabel.TextSize = 12
+            logLabel.TextSize = 13  -- Увеличенный размер
             logLabel.TextXAlignment = Enum.TextXAlignment.Left
             logLabel.BackgroundTransparency = 1
             logLabel.Parent = debugLogFrame
@@ -490,38 +495,47 @@ local function initDebugPanel()
     statsFrame.BackgroundTransparency = 1
     statsFrame.Parent = debugPanel
     
+    local statsLayout = Instance.new("UIListLayout")
+    statsLayout.Padding = UDim.new(0, 10)  -- Отступ между элементами
+    statsLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    statsLayout.Parent = statsFrame
+    
     local fpsLabel = Instance.new("TextLabel")
-    fpsLabel.Size = UDim2.new(1, 0, 0.33, 0)
+    fpsLabel.Size = UDim2.new(1, 0, 0, 28)  -- Увеличенная высота
     fpsLabel.Text = "FPS: 0"
     fpsLabel.TextColor3 = Color3.new(0, 0, 0)
     fpsLabel.Font = Enum.Font.SourceSansBold
-    fpsLabel.TextSize = 14
+    fpsLabel.TextSize = 16  -- Увеличенный размер
     fpsLabel.Parent = statsFrame
     
     local pingLabel = Instance.new("TextLabel")
-    pingLabel.Size = UDim2.new(1, 0, 0.33, 0)
-    pingLabel.Position = UDim2.new(0, 0, 0.33, 0)
+    pingLabel.Size = UDim2.new(1, 0, 0, 28)  -- Увеличенная высота
     pingLabel.Text = "Ping: 0ms"
     pingLabel.TextColor3 = Color3.new(0, 0, 0)
     pingLabel.Font = Enum.Font.SourceSansBold
-    pingLabel.TextSize = 14
+    pingLabel.TextSize = 16  -- Увеличенный размер
     pingLabel.Parent = statsFrame
     
     local memLabel = Instance.new("TextLabel")
-    memLabel.Size = UDim2.new(1, 0, 0.33, 0)
-    memLabel.Position = UDim2.new(0, 0, 0.66, 0)
+    memLabel.Size = UDim2.new(1, 0, 0, 28)  -- Увеличенная высота
     memLabel.Text = "Memory: 0MB"
     memLabel.TextColor3 = Color3.new(0, 0, 0)
     memLabel.Font = Enum.Font.SourceSansBold
-    memLabel.TextSize = 14
+    memLabel.TextSize = 16  -- Увеличенный размер
     memLabel.Parent = statsFrame
     
-    debugLogFrame = Instance.new("Frame")
-    debugLogFrame.Size = UDim2.new(1, -10, 0.7, 0)
-    debugLogFrame.Position = UDim2.new(0, 5, 0.3, 0)
+    debugLogFrame = Instance.new("ScrollingFrame")
+    debugLogFrame.Size = UDim2.new(1, -15, 0.7, 0)  -- Увеличены отступы
+    debugLogFrame.Position = UDim2.new(0, 8, 0.3, 0)
     debugLogFrame.BackgroundTransparency = 1
-    debugLogFrame.ClipsDescendants = true
+    debugLogFrame.ScrollBarThickness = 10  -- Увеличенная толщина
+    debugLogFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
     debugLogFrame.Parent = debugPanel
+    
+    local logLayout = Instance.new("UIListLayout")
+    logLayout.Padding = UDim.new(0, 7)  -- Отступ между записями
+    logLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    logLayout.Parent = debugLogFrame
     
     -- Обновление статистики
     local lastTime = tick()
@@ -543,7 +557,7 @@ local function initDebugPanel()
     end)
 end
 
--- НОВЫЕ ФУНКЦИИ
+-- ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ
 local function changeGravity(value)
     Workspace.Gravity = value
     logDebug("Гравитация изменена: " .. value)
@@ -703,7 +717,7 @@ local function createBlackHole(position)
     blackHole.Size = Vector3.new(5, 5, 5)
     blackHole.Shape = Enum.PartType.Ball
     blackHole.Color = Color3.new(0, 0, 0)
-    blackHole.Material = EnumMaterial.Neon
+    blackHole.Material = Enum.Material.Neon
     blackHole.Anchored = false
     blackHole.CanCollide = false
     blackHole.Parent = Workspace
@@ -735,9 +749,9 @@ local activeStates = {
     ESP = false
 }
 
--- Переработанная функция для кнопок с состоянием
+-- Функция для кнопок с состоянием
 local function createStateButton(content, name, func, stateKey)
-    local btn, updateState = createButton(name, 25, true)
+    local btn, updateState = createButton(name, 38, true)
     btn.Parent = content
     
     -- Инициализируем состояние
@@ -751,9 +765,9 @@ local function createStateButton(content, name, func, stateKey)
     return btn
 end
 
--- Функция для обычных кнопок (без состояния)
+-- Функция для обычных кнопок
 local function addButton(content, name, func)
-    local btn = createButton(name, 25, false)
+    local btn = createButton(name, 38, false)
     btn.Parent = content
     btn.MouseButton1Click:Connect(func)
     return btn
@@ -806,7 +820,7 @@ end)
 addButton(mainContent, "Заблокировать выбранных", freezeSelectedPlayers)
 addButton(mainContent, "Разблокировать выбранных", unfreezeSelectedPlayers)
 
--- НОВЫЕ КНОПКИ
+-- Дополнительные функции
 addButton(mainContent, "Создать взрыв", function()
     if player.Character then
         local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
@@ -842,7 +856,7 @@ createStateButton(mainContent, "Бесконечный прыжок", function(s
     return true
 end, "InfiniteJump")
 
--- Визуальные функции (вкладка "Визуал")
+-- Визуальные функции
 addButton(visualContent, "Скорость x2", function()
     speedHack(32)
 end)
@@ -882,29 +896,39 @@ createStateButton(visualContent, "Показать ESP", function(state)
     return not state
 end, "ESP")
 
--- Настройки (вкладка "Настройки")
-local autoOpenSetting = Instance.new("Frame")
-autoOpenSetting.Size = UDim2.new(1, 0, 0, 25)
-autoOpenSetting.BackgroundTransparency = 1
+-- Функция для создания элементов настроек
+local function createSettingFrame(text)
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, 0, 0, 38)  -- Увеличенная высота
+    frame.BackgroundTransparency = 1
+    frame.LayoutOrder = #settingsContent:GetChildren() + 1
+    
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(0.6, 0, 1, 0)
+    label.Text = text
+    label.TextColor3 = Color3.new(0, 0, 0)
+    label.Font = Enum.Font.SourceSansBold
+    label.TextSize = 14  -- Увеличенный размер
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.BackgroundTransparency = 1
+    label.Parent = frame
+    
+    return frame
+end
+
+-- Настройки
+local autoOpenSetting = createSettingFrame("Авто-открытие при запуске")
 autoOpenSetting.Parent = settingsContent
 
-local autoOpenLabel = Instance.new("TextLabel")
-autoOpenLabel.Size = UDim2.new(0.6, 0, 1, 0)
-autoOpenLabel.Text = "Авто-открытие при запуске"
-autoOpenLabel.TextColor3 = Color3.new(0, 0, 0)
-autoOpenLabel.Font = Enum.Font.SourceSans
-autoOpenLabel.TextSize = 12
-autoOpenLabel.TextXAlignment = Enum.TextXAlignment.Left
-autoOpenLabel.BackgroundTransparency = 1
-autoOpenLabel.Parent = autoOpenSetting
-
 local autoOpenToggle = Instance.new("TextButton")
-autoOpenToggle.Size = UDim2.new(0.3, 0, 0.7, 0)
-autoOpenToggle.Position = UDim2.new(0.65, 0, 0.15, 0)
+autoOpenToggle.Size = UDim2.new(0.3, 0, 0.8, 0)
+autoOpenToggle.Position = UDim2.new(0.65, 0, 0.1, 0)
 autoOpenToggle.Text = settings.AutoOpen and "ON" or "OFF"
 autoOpenToggle.TextColor3 = settings.AutoOpen and Color3.new(0, 0.5, 0) or Color3.new(0.5, 0, 0)
 autoOpenToggle.BackgroundColor3 = Color3.fromRGB(236, 233, 216)
 autoOpenToggle.BorderColor3 = Color3.new(0, 0, 0)
+autoOpenToggle.TextSize = 14  -- Увеличенный размер
+autoOpenToggle.Font = Enum.Font.SourceSansBold
 autoOpenToggle.Visible = true
 autoOpenToggle.Parent = autoOpenSetting
 
@@ -915,40 +939,29 @@ autoOpenToggle.MouseButton1Click:Connect(function()
     logDebug("Авто-открытие: " .. (settings.AutoOpen and "включено" or "выключено"))
 end)
 
-local flySpeedSetting = Instance.new("Frame")
-flySpeedSetting.Size = UDim2.new(1, 0, 0, 25)
-flySpeedSetting.BackgroundTransparency = 1
+local flySpeedSetting = createSettingFrame("Скорость полёта: " .. settings.FlySpeed)
 flySpeedSetting.Parent = settingsContent
 
-local flySpeedLabel = Instance.new("TextLabel")
-flySpeedLabel.Size = UDim2.new(0.6, 0, 1, 0)
-flySpeedLabel.Text = "Скорость полёта: " .. flySpeed
-flySpeedLabel.TextColor3 = Color3.new(0, 0, 0)
-flySpeedLabel.Font = Enum.Font.SourceSans
-flySpeedLabel.TextSize = 12
-flySpeedLabel.TextXAlignment = Enum.TextXAlignment.Left
-flySpeedLabel.BackgroundTransparency = 1
-flySpeedLabel.Parent = flySpeedSetting
-
 local flySpeedInput = Instance.new("TextBox")
-flySpeedInput.Size = UDim2.new(0.3, 0, 0.7, 0)
-flySpeedInput.Position = UDim2.new(0.65, 0, 0.15, 0)
-flySpeedInput.Text = tostring(flySpeed)
+flySpeedInput.Size = UDim2.new(0.3, 0, 0.8, 0)
+flySpeedInput.Position = UDim2.new(0.65, 0, 0.1, 0)
+flySpeedInput.Text = tostring(settings.FlySpeed)
 flySpeedInput.TextColor3 = Color3.new(0, 0, 0)
 flySpeedInput.BackgroundColor3 = Color3.fromRGB(236, 233, 216)
 flySpeedInput.BorderColor3 = Color3.new(0, 0, 0)
+flySpeedInput.TextSize = 14  -- Увеличенный размер
+flySpeedInput.Font = Enum.Font.SourceSansBold
 flySpeedInput.Visible = true
 flySpeedInput.Parent = flySpeedSetting
 
 flySpeedInput.FocusLost:Connect(function()
     local newSpeed = tonumber(flySpeedInput.Text)
     if newSpeed and newSpeed > 0 then
-        flySpeed = newSpeed
         settings.FlySpeed = newSpeed
-        flySpeedLabel.Text = "Скорость полёта: " .. newSpeed
+        flySpeedSetting:FindFirstChild("TextLabel").Text = "Скорость полёта: " .. newSpeed
         logDebug("Скорость полёта изменена: " .. newSpeed)
     else
-        flySpeedInput.Text = tostring(flySpeed)
+        flySpeedInput.Text = tostring(settings.FlySpeed)
     end
 end)
 
@@ -1057,7 +1070,7 @@ settingsTab.MouseButton1Click:Connect(function() switchTab(settingsContent) end)
 -- Перетаскивание окна
 local dragging = false
 local dragOffset = Vector2.new(0, 0)
-local dragStartPos = UDim2.new(0.5, -225, 0.5, -250)
+local dragStartPos = UDim2.new(0.5, -250, 0.5, -275)
 
 titleBar.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
