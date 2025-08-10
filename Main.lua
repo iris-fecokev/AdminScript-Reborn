@@ -25,6 +25,7 @@ local ANIMATION_STEP_DELAY = 0.03
 local FLY_ANIMATION_ID = 93954221593805
 local DEBUG_MODE = true
 local DEBUG_LOG_MAX = 50
+local MIN_WINDOW_SIZE = Vector2.new(400, 300)
 
 -- Глобальные переменные
 local debugLogs = {}
@@ -37,10 +38,16 @@ local performanceStats = {
     Memory = 0
 }
 
+-- Настройки
+local settings = {
+    AutoOpen = true,
+    FlySpeed = 50
+}
+
 -- Основное окно
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 600, 0, 700)
-mainFrame.Position = UDim2.new(0.5, -300, 0.5, -350)
+mainFrame.Size = UDim2.new(0, 450, 0, 500)
+mainFrame.Position = UDim2.new(0.5, -225, 0.5, -250)
 mainFrame.BackgroundColor3 = Color3.fromRGB(212, 208, 200)
 mainFrame.BorderSizePixel = 0
 mainFrame.ClipsDescendants = true
@@ -59,7 +66,7 @@ local titleLabel = Instance.new("TextLabel")
 titleLabel.Size = UDim2.new(1, -60, 1, 0)
 titleLabel.Position = UDim2.new(0, 5, 0, 0)
 titleLabel.BackgroundTransparency = 1
-titleLabel.Text = "AdminScript Reborn by IRIS_FECOKEV"
+titleLabel.Text = "AdminScript by IRIS_FECOKEV"
 titleLabel.TextColor3 = Color3.new(1, 1, 1)
 titleLabel.Font = Enum.Font.SourceSansBold
 titleLabel.TextSize = 14
@@ -67,23 +74,31 @@ titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 titleLabel.Visible = false
 titleLabel.Parent = titleBar
 
--- Кнопки управления окном
-local minimizeBtn = Instance.new("ImageButton")
+-- Кнопки управления окном (ВСЕГДА ВИДИМЫЕ)
+local minimizeBtn = Instance.new("TextButton")
 minimizeBtn.Name = "MinimizeBtn"
 minimizeBtn.Size = UDim2.new(0, 22, 0, 22)
 minimizeBtn.Position = UDim2.new(1, -50, 0, 1)
-minimizeBtn.BackgroundTransparency = 1
-minimizeBtn.Image = "rbxassetid://100060328280272"
-minimizeBtn.Visible = false
+minimizeBtn.BackgroundColor3 = Color3.fromRGB(0, 14, 122)
+minimizeBtn.BorderSizePixel = 0
+minimizeBtn.Text = "-"
+minimizeBtn.TextColor3 = Color3.new(1, 1, 1)
+minimizeBtn.Font = Enum.Font.SourceSansBold
+minimizeBtn.TextSize = 14
+minimizeBtn.Visible = true
 minimizeBtn.Parent = titleBar
 
-local closeBtn = Instance.new("ImageButton")
+local closeBtn = Instance.new("TextButton")
 closeBtn.Name = "CloseBtn"
 closeBtn.Size = UDim2.new(0, 22, 0, 22)
 closeBtn.Position = UDim2.new(1, -25, 0, 1)
-closeBtn.BackgroundTransparency = 1
-closeBtn.Image = "rbxassetid://111156260096414"
-closeBtn.Visible = false
+closeBtn.BackgroundColor3 = Color3.fromRGB(0, 14, 122)
+closeBtn.BorderSizePixel = 0
+closeBtn.Text = "X"
+closeBtn.TextColor3 = Color3.new(1, 1, 1)
+closeBtn.Font = Enum.Font.SourceSansBold
+closeBtn.TextSize = 14
+closeBtn.Visible = true
 closeBtn.Parent = titleBar
 
 -- Панель вкладок
@@ -97,24 +112,24 @@ tabBar.Parent = mainFrame
 
 local function createTabButton(name, posX)
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0, 80, 0, 22)
+    btn.Size = UDim2.new(0, 70, 0, 22)
     btn.Position = UDim2.new(0, posX, 0, 0)
     btn.BackgroundColor3 = Color3.fromRGB(236, 233, 216)
     btn.BorderColor3 = Color3.new(0, 0, 0)
     btn.Text = name
     btn.TextColor3 = Color3.new(0, 0, 0)
     btn.Font = Enum.Font.SourceSans
-    btn.TextSize = 14
+    btn.TextSize = 12
     btn.Visible = false
     btn.Parent = tabBar
     return btn
 end
 
 local mainTab = createTabButton("Основные", 5)
-local playerTab = createTabButton("Игроки", 90)
-local visualTab = createTabButton("Визуал", 175)
-local debugTab = createTabButton("Дебаг", 260)
-local settingsTab = createTabButton("Настройки", 345)
+local playerTab = createTabButton("Игроки", 80)
+local visualTab = createTabButton("Визуал", 155)
+local debugTab = createTabButton("Дебаг", 230)
+local settingsTab = createTabButton("Настройки", 305)
 
 -- Контейнеры для вкладок
 local tabContainer = Instance.new("Frame")
@@ -159,27 +174,27 @@ settingsContent.Parent = tabContainer
 -- Ярлык в стиле Windows XP (внизу слева)
 local taskbarButton = Instance.new("TextButton")
 taskbarButton.Name = "TaskbarButton"
-taskbarButton.Size = UDim2.new(0, 150, 0, 30)
-taskbarButton.Position = UDim2.new(0, 10, 1, -35)
+taskbarButton.Size = UDim2.new(0, 130, 0, 28)
+taskbarButton.Position = UDim2.new(0, 10, 1, -33)
 taskbarButton.BackgroundColor3 = Color3.fromRGB(0, 14, 122)
 taskbarButton.BorderSizePixel = 0
 taskbarButton.Text = "AdminScript"
 taskbarButton.TextColor3 = Color3.new(1, 1, 1)
 taskbarButton.Font = Enum.Font.SourceSansBold
-taskbarButton.TextSize = 14
+taskbarButton.TextSize = 12
 taskbarButton.Visible = false
 taskbarButton.Parent = gui
 
 -- Переработанная функция создания кнопок
 local function createButton(name, sizeY, withState)
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, -10, 0, sizeY or 35)
+    btn.Size = UDim2.new(1, -10, 0, sizeY or 30)
     btn.BackgroundColor3 = Color3.fromRGB(236, 233, 216)
     btn.BorderColor3 = Color3.new(0, 0, 0)
     btn.Text = name
     btn.TextColor3 = Color3.new(0, 0, 0)
     btn.Font = Enum.Font.SourceSans
-    btn.TextSize = 16
+    btn.TextSize = 14
     btn.AutoButtonColor = false
     btn.LayoutOrder = 1
     btn.Visible = false
@@ -189,12 +204,12 @@ local function createButton(name, sizeY, withState)
     if withState then
         stateIndicator = Instance.new("TextLabel")
         stateIndicator.Name = "StateIndicator"
-        stateIndicator.Size = UDim2.new(0, 40, 1, -4)
-        stateIndicator.Position = UDim2.new(1, -45, 0, 2)
+        stateIndicator.Size = UDim2.new(0, 30, 1, -4)
+        stateIndicator.Position = UDim2.new(1, -35, 0, 2)
         stateIndicator.Text = ""
         stateIndicator.TextColor3 = Color3.new(0, 0.5, 0)
         stateIndicator.Font = Enum.Font.SourceSansBold
-        stateIndicator.TextSize = 14
+        stateIndicator.TextSize = 12
         stateIndicator.BackgroundTransparency = 1
         stateIndicator.Visible = false
         stateIndicator.Parent = btn
@@ -335,10 +350,10 @@ local function stopFlying()
     end
 end
 
--- Система выбора игроков
+-- Система выбора игроков (исправлено слипание)
 local selectedPlayers = {}
 local playerListFrame = Instance.new("ScrollingFrame")
-playerListFrame.Size = UDim2.new(1, -10, 0.7, 0)
+playerListFrame.Size = UDim2.new(1, -10, 1, -10)
 playerListFrame.Position = UDim2.new(0, 5, 0, 5)
 playerListFrame.BackgroundTransparency = 1
 playerListFrame.ScrollBarThickness = 8
@@ -347,7 +362,7 @@ playerListFrame.Visible = false
 playerListFrame.Parent = playerContent
 
 local playerListLayout = Instance.new("UIListLayout")
-playerListLayout.Padding = UDim.new(0, 5)
+playerListLayout.Padding = UDim.new(0, 10) -- Увеличено расстояние
 playerListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 playerListLayout.Parent = playerListFrame
 
@@ -357,32 +372,33 @@ local function updatePlayerList()
     for _, plr in ipairs(Players:GetPlayers()) do
         if plr ~= player then
             local playerFrame = Instance.new("Frame")
-            playerFrame.Size = UDim2.new(1, -10, 0, 30)
+            playerFrame.Size = UDim2.new(1, -10, 0, 40) -- Увеличена высота
             playerFrame.BackgroundTransparency = 1
+            playerFrame.LayoutOrder = 1
             
             local playerName = Instance.new("TextLabel")
-            playerName.Size = UDim2.new(0.7, 0, 1, 0)
+            playerName.Size = UDim2.new(1, 0, 0.5, 0)
             playerName.Text = plr.Name
             playerName.TextColor3 = Color3.new(0, 0, 0)
-            playerName.Font = Enum.Font.SourceSans
+            playerName.Font = Enum.Font.SourceSansBold
             playerName.TextSize = 14
             playerName.TextXAlignment = Enum.TextXAlignment.Left
             playerName.BackgroundTransparency = 1
             playerName.Parent = playerFrame
             
             local selectBtn = Instance.new("TextButton")
-            selectBtn.Size = UDim2.new(0.25, 0, 0.8, 0)
-            selectBtn.Position = UDim2.new(0.75, 0, 0.1, 0)
-            selectBtn.Text = selectedPlayers[plr] and "✓" or ""
+            selectBtn.Size = UDim2.new(1, 0, 0.45, 0)
+            selectBtn.Position = UDim2.new(0, 0, 0.5, 0)
+            selectBtn.Text = selectedPlayers[plr] and "✓ ВЫБРАН" or "Выбрать"
             selectBtn.BackgroundColor3 = selectedPlayers[plr] and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(200, 200, 200)
             selectBtn.TextColor3 = Color3.new(0, 0, 0)
             selectBtn.Font = Enum.Font.SourceSansBold
-            selectBtn.TextSize = 14
+            selectBtn.TextSize = 12
             selectBtn.Parent = playerFrame
             
             selectBtn.MouseButton1Click:Connect(function()
                 selectedPlayers[plr] = not selectedPlayers[plr]
-                selectBtn.Text = selectedPlayers[plr] and "✓" or ""
+                selectBtn.Text = selectedPlayers[plr] and "✓ ВЫБРАН" or "Выбрать"
                 selectBtn.BackgroundColor3 = selectedPlayers[plr] and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(200, 200, 200)
             end)
             
@@ -432,78 +448,6 @@ local function unfreezeSelectedPlayers()
     end
 end
 
--- Система хитбоксов
-local hitboxes = {}
-local hitboxMode = 0 -- 0: выкл, 1: весь хитбокс, 2: части тела
-
-local function createHitbox(part)
-    local hitbox = Instance.new("BoxHandleAdornment")
-    hitbox.Name = "AdminHitbox"
-    hitbox.Adornee = part
-    hitbox.AlwaysOnTop = true
-    hitbox.ZIndex = 10
-    hitbox.Size = part.Size
-    hitbox.Transparency = 0.7
-    
-    if hitboxMode == 1 then
-        hitbox.Color3 = Color3.new(1, 0, 0) -- Красный для всего хитбокса
-    elseif hitboxMode == 2 then
-        hitbox.Color3 = Color3.new(1, 1, 1) -- Белый для частей тела
-    end
-    
-    hitbox.Parent = part
-    return hitbox
-end
-
-local function updateHitboxes()
-    -- Удаляем старые хитбоксы
-    for _, hitbox in ipairs(hitboxes) do
-        if hitbox then
-            hitbox:Destroy()
-        end
-    end
-    hitboxes = {}
-    
-    if hitboxMode == 0 then return end
-    
-    for _, plr in ipairs(Players:GetPlayers()) do
-        if plr.Character then
-            if hitboxMode == 1 then -- Весь хитбокс
-                local humanoid = plr.Character:FindFirstChild("Humanoid")
-                if humanoid then
-                    local hitboxPart = Instance.new("Part")
-                    hitboxPart.Name = "HitboxPart"
-                    hitboxPart.Size = Vector3.new(3, 5, 3)
-                    hitboxPart.Transparency = 1
-                    hitboxPart.CanCollide = false
-                    hitboxPart.Anchored = true
-                    hitboxPart.Parent = plr.Character
-                    
-                    local weld = Instance.new("Weld")
-                    weld.Part0 = plr.Character.HumanoidRootPart
-                    weld.Part1 = hitboxPart
-                    weld.Parent = hitboxPart
-                    
-                    local hitbox = createHitbox(hitboxPart)
-                    table.insert(hitboxes, hitbox)
-                end
-            elseif hitboxMode == 2 then -- Части тела
-                for _, part in ipairs(plr.Character:GetDescendants()) do
-                    if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
-                        local hitbox = createHitbox(part)
-                        table.insert(hitboxes, hitbox)
-                    end
-                end
-            end
-        end
-    end
-end
-
-local function setHitboxMode(mode)
-    hitboxMode = mode
-    updateHitboxes()
-end
-
 -- Дебаг-система
 local function logDebug(message)
     if not DEBUG_MODE then return end
@@ -519,12 +463,12 @@ local function logDebug(message)
         
         for i, log in ipairs(debugLogs) do
             local logLabel = Instance.new("TextLabel")
-            logLabel.Size = UDim2.new(1, 0, 0, 20)
-            logLabel.Position = UDim2.new(0, 0, 0, (i-1)*20)
+            logLabel.Size = UDim2.new(1, 0, 0, 18)
+            logLabel.Position = UDim2.new(0, 0, 0, (i-1)*18)
             logLabel.Text = log
             logLabel.TextColor3 = Color3.new(0, 0, 0)
             logLabel.Font = Enum.Font.SourceSans
-            logLabel.TextSize = 14
+            logLabel.TextSize = 12
             logLabel.TextXAlignment = Enum.TextXAlignment.Left
             logLabel.BackgroundTransparency = 1
             logLabel.Parent = debugLogFrame
@@ -551,7 +495,7 @@ local function initDebugPanel()
     fpsLabel.Text = "FPS: 0"
     fpsLabel.TextColor3 = Color3.new(0, 0, 0)
     fpsLabel.Font = Enum.Font.SourceSansBold
-    fpsLabel.TextSize = 16
+    fpsLabel.TextSize = 14
     fpsLabel.Parent = statsFrame
     
     local pingLabel = Instance.new("TextLabel")
@@ -560,7 +504,7 @@ local function initDebugPanel()
     pingLabel.Text = "Ping: 0ms"
     pingLabel.TextColor3 = Color3.new(0, 0, 0)
     pingLabel.Font = Enum.Font.SourceSansBold
-    pingLabel.TextSize = 16
+    pingLabel.TextSize = 14
     pingLabel.Parent = statsFrame
     
     local memLabel = Instance.new("TextLabel")
@@ -569,7 +513,7 @@ local function initDebugPanel()
     memLabel.Text = "Memory: 0MB"
     memLabel.TextColor3 = Color3.new(0, 0, 0)
     memLabel.Font = Enum.Font.SourceSansBold
-    memLabel.TextSize = 16
+    memLabel.TextSize = 14
     memLabel.Parent = statsFrame
     
     debugLogFrame = Instance.new("Frame")
@@ -593,135 +537,56 @@ local function initDebugPanel()
             
             -- Обновление статистики
             fpsLabel.Text = "FPS: " .. performanceStats.FPS
-            pingLabel.Text = "Ping: " .. math.random(20, 100) .. "ms" -- Заглушка
-            memLabel.Text = "Memory: " .. math.random(50, 200) .. "MB" -- Заглушка
+            pingLabel.Text = "Ping: " .. math.random(20, 100) .. "ms"
+            memLabel.Text = "Memory: " .. math.random(50, 200) .. "MB"
         end
     end)
 end
 
--- Расширенные функции дебага
-local function showCollisionGeometry()
-    for _, part in ipairs(Workspace:GetDescendants()) do
-        if part:IsA("BasePart") and part.CanCollide then
-            local box = Instance.new("BoxHandleAdornment")
-            box.Adornee = part
-            box.AlwaysOnTop = true
-            box.ZIndex = 5
-            box.Size = part.Size
-            box.Transparency = 0.8
-            box.Color3 = Color3.new(0, 1, 0)
-            box.Parent = part
-            Debris:AddItem(box, 10)
-        end
-    end
-    logDebug("Показана геометрия коллизий")
+-- НОВЫЕ ФУНКЦИИ
+local function changeGravity(value)
+    Workspace.Gravity = value
+    logDebug("Гравитация изменена: " .. value)
 end
 
-local function showNetworkOwners()
-    for _, part in ipairs(Workspace:GetDescendants()) do
-        if part:IsA("BasePart") then
-            local owner = part:GetNetworkOwner()
-            if owner then
-                local billboard = Instance.new("BillboardGui")
-                billboard.Adornee = part
-                billboard.Size = UDim2.new(0, 100, 0, 40)
-                billboard.AlwaysOnTop = true
-                
-                local label = Instance.new("TextLabel")
-                label.Size = UDim2.new(1, 0, 1, 0)
-                label.Text = owner.Name
-                label.TextColor3 = Color3.new(1, 0, 0)
-                label.BackgroundTransparency = 1
-                label.Parent = billboard
-                
-                billboard.Parent = part
-                Debris:AddItem(billboard, 10)
+local function setTimeOfDay(hour)
+    Lighting.ClockTime = hour
+    logDebug("Время суток установлено: " .. hour)
+end
+
+local function speedHack(speed)
+    if player.Character then
+        local humanoid = player.Character:FindFirstChild("Humanoid")
+        if humanoid then
+            humanoid.WalkSpeed = speed
+            logDebug("Скорость установлена: " .. speed)
+        end
+    end
+end
+
+local function espPlayers()
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if plr ~= player and plr.Character then
+            local highlight = Instance.new("Highlight")
+            highlight.Name = "AdminESP"
+            highlight.FillColor = Color3.new(1, 0, 0)
+            highlight.OutlineColor = Color3.new(1, 1, 1)
+            highlight.Parent = plr.Character
+        end
+    end
+    logDebug("ESP включен")
+end
+
+local function removeESP()
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if plr.Character then
+            local highlight = plr.Character:FindFirstChild("AdminESP")
+            if highlight then
+                highlight:Destroy()
             end
         end
     end
-    logDebug("Показаны владельцы сетевых объектов")
-end
-
-local function showPhysicsGroups()
-    for groupName, _ in pairs(PhysicsService:GetRegisteredCollisionGroups()) do
-        local parts = PhysicsService:GetCollisionGroupParts(groupName)
-        for _, part in ipairs(parts) do
-            local box = Instance.new("BoxHandleAdornment")
-            box.Adornee = part
-            box.AlwaysOnTop = true
-            box.ZIndex = 5
-            box.Size = part.Size
-            box.Transparency = 0.7
-            box.Color3 = Color3.new(math.random(), math.random(), math.random())
-            box.Parent = part
-            Debris:AddItem(box, 10)
-        end
-    end
-    logDebug("Показаны группы физики")
-end
-
-local function dumpInstanceTree(object, depth)
-    depth = depth or 0
-    local prefix = string.rep("  ", depth)
-    logDebug(prefix .. object:GetFullName() .. " (" .. object.ClassName .. ")")
-    
-    for _, child in ipairs(object:GetChildren()) do
-        dumpInstanceTree(child, depth + 1)
-    end
-end
-
-local function testNetworkLatency()
-    local start = os.clock()
-    -- Имитация сетевого запроса
-    wait(0.1)
-    local latency = (os.clock() - start) * 1000
-    logDebug("Сетевая задержка: " .. string.format("%.2f", latency) .. "ms")
-end
-
-local function stressTestPerformance()
-    logDebug("Начало стресс-теста производительности...")
-    local startTime = os.clock()
-    
-    local parts = {}
-    for i = 1, 100 do
-        local part = Instance.new("Part")
-        part.Position = Vector3.new(math.random(-50, 50), 10, math.random(-50, 50))
-        part.Parent = Workspace
-        table.insert(parts, part)
-    end
-    
-    for i = 1, 100 do
-        for _, part in ipairs(parts) do
-            part.Position += Vector3.new(0.1, 0, 0.1)
-        end
-        RunService.Heartbeat:Wait()
-    end
-    
-    for _, part in ipairs(parts) do
-        part:Destroy()
-    end
-    
-    local duration = os.clock() - startTime
-    logDebug("Стресс-тест завершен за " .. string.format("%.2f", duration) .. " секунд")
-end
-
--- Новые функции
-local function infiniteJump()
-    player.Character:WaitForChild("Humanoid").UseJumpPower = true
-    UserInputService.JumpRequest:Connect(function()
-        player.Character.Humanoid:ChangeState("Jumping")
-    end)
-    logDebug("Бесконечный прыжок активирован")
-end
-
-local function changeGravity(value)
-    Workspace.Gravity = value
-    logDebug("Гравитация изменена на: " .. value)
-end
-
-local function setTimeOfDay(time)
-    Lighting.ClockTime = time
-    logDebug("Время суток установлено: " .. time)
+    logDebug("ESP выключен")
 end
 
 local function ghostMode()
@@ -733,209 +598,33 @@ local function ghostMode()
             end
         end
     end
-    logDebug("Режим призрака активирован")
+    logDebug("Режим призрака включен")
 end
 
-local function espPlayers()
-    for _, plr in ipairs(Players:GetPlayers()) do
-        if plr ~= player and plr.Character then
-            local head = plr.Character:FindFirstChild("Head")
-            if head then
-                local billboard = Instance.new("BillboardGui")
-                billboard.Name = "ESP"
-                billboard.Adornee = head
-                billboard.Size = UDim2.new(0, 100, 0, 40)
-                billboard.StudsOffset = Vector3.new(0, 2, 0)
-                billboard.AlwaysOnTop = true
-                
-                local nameLabel = Instance.new("TextLabel")
-                nameLabel.Size = UDim2.new(1, 0, 0.5, 0)
-                nameLabel.Text = plr.Name
-                nameLabel.TextColor3 = Color3.new(1, 1, 0)
-                nameLabel.BackgroundTransparency = 1
-                nameLabel.Parent = billboard
-                
-                local healthLabel = Instance.new("TextLabel")
-                healthLabel.Size = UDim2.new(1, 0, 0.5, 0)
-                healthLabel.Position = UDim2.new(0, 0, 0.5, 0)
-                healthLabel.Text = "HP: 100"
-                healthLabel.TextColor3 = Color3.new(0, 1, 0)
-                healthLabel.BackgroundTransparency = 1
-                healthLabel.Parent = billboard
-                
-                billboard.Parent = head
-                
-                -- Обновление здоровья
-                local humanoid = plr.Character:FindFirstChild("Humanoid")
-                if humanoid then
-                    humanoid:GetPropertyChangedSignal("Health"):Connect(function()
-                        healthLabel.Text = "HP: " .. math.floor(humanoid.Health)
-                    end)
-                end
+local function infiniteJump()
+    UserInputService.JumpRequest:Connect(function()
+        if player.Character then
+            local humanoid = player.Character:FindFirstChild("Humanoid")
+            if humanoid then
+                humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
             end
         end
-    end
-    logDebug("ESP игроков активировано")
-end
-
-local function removeESP()
-    for _, plr in ipairs(Players:GetPlayers()) do
-        if plr.Character then
-            local head = plr.Character:FindFirstChild("Head")
-            if head then
-                for _, child in ipairs(head:GetChildren()) do
-                    if child.Name == "ESP" then
-                        child:Destroy()
-                    end
-                end
-            end
-        end
-    end
-    logDebug("ESP удалено")
-end
-
-local function speedHack(speed)
-    if player.Character then
-        local humanoid = player.Character:FindFirstChild("Humanoid")
-        if humanoid then
-            humanoid.WalkSpeed = speed
-        end
-    end
-    logDebug("Скорость изменена на: " .. speed)
-end
-
-local function teleportToPosition()
-    local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-    if root then
-        root.CFrame = root.CFrame + root.CFrame.LookVector * 50
-        logDebug("Телепортирован вперед на 50 юнитов")
-    end
-end
-
-local function spawnVehicle()
-    local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-    if root then
-        local vehicle = Instance.new("Part")
-        vehicle.Name = "AdminVehicle"
-        vehicle.Size = Vector3.new(4, 2, 6)
-        vehicle.Position = root.Position + root.CFrame.LookVector * 10
-        vehicle.Anchored = false
-        vehicle.CanCollide = true
-        vehicle.Color = Color3.new(0, 0.5, 1)
-        vehicle.Parent = Workspace
-        
-        local seat = Instance.new("Seat")
-        seat.Size = Vector3.new(2, 1, 2)
-        seat.Position = vehicle.Position + Vector3.new(0, 1.5, 0)
-        seat.Parent = vehicle
-        
-        local weld = Instance.new("Weld")
-        weld.Part0 = vehicle
-        weld.Part1 = seat
-        weld.C0 = CFrame.new(0, 1.5, 0)
-        weld.Parent = vehicle
-        
-        logDebug("Транспорт создан")
-    end
-end
-
-local function deleteAllObjects()
-    for _, obj in ipairs(Workspace:GetChildren()) do
-        if not obj:IsA("Terrain") and obj ~= player.Character then
-            obj:Destroy()
-        end
-    end
-    logDebug("Все объекты удалены")
-end
-
-local function createExplosion()
-    local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-    if root then
-        local explosion = Instance.new("Explosion")
-        explosion.Position = root.Position
-        explosion.BlastRadius = 20
-        explosion.BlastPressure = 100000
-        explosion.Parent = Workspace
-        logDebug("Создан взрыв")
-    end
-end
-
-local function freezeWorld()
-    for _, part in ipairs(Workspace:GetDescendants()) do
-        if part:IsA("BasePart") then
-            part.Anchored = true
-        end
-    end
-    logDebug("Мир заморожен")
-end
-
-local function unfreezeWorld()
-    for _, part in ipairs(Workspace:GetDescendants()) do
-        if part:IsA("BasePart") then
-            part.Anchored = false
-        end
-    end
-    logDebug("Мир разморожен")
-end
-
--- Состояния функций
-local activeStates = {
-    Fly = false,
-    Noclip = false,
-    GodMode = false,
-    Hitbox = false,
-    InfiniteJump = false,
-    GhostMode = false,
-    ESP = false
-}
-
--- Переработанная функция для кнопок с состоянием
-local function createStateButton(content, name, func, stateKey)
-    local btn, updateState = createButton(name, nil, true) -- true указывает, что это кнопка с состоянием
-    btn.Parent = content
-    
-    -- Инициализируем состояние
-    updateState(activeStates[stateKey])
-    
-    btn.MouseButton1Click:Connect(function()
-        activeStates[stateKey] = func(activeStates[stateKey])
-        updateState(activeStates[stateKey])
     end)
-    
-    return btn
+    logDebug("Бесконечный прыжок включен")
 end
 
--- Функция для обычных кнопок (без состояния)
-local function addButton(content, name, func)
-    local btn = createButton(name, nil, false) -- false указывает, что это обычная кнопка
-    btn.Parent = content
-    btn.MouseButton1Click:Connect(func)
-    return btn
-end
-
--- Функции для переключения состояний
-local function toggleNoclip(state)
-    if state then
-        if player.Character then
-            for _, part in ipairs(player.Character:GetDescendants()) do
-                if part:IsA("BasePart") then
-                    part.CanCollide = true
-                end
-            end
-        end
-    else
-        if player.Character then
-            for _, part in ipairs(player.Character:GetDescendants()) do
-                if part:IsA("BasePart") then
-                    part.CanCollide = false
-                end
+local function noclip(state)
+    if player.Character then
+        for _, part in ipairs(player.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = not state
             end
         end
     end
     return not state
 end
 
-local function toggleGodMode(state)
+local function godMode(state)
     local character = player.Character
     if character then
         local humanoid = character:FindFirstChild("Humanoid")
@@ -952,61 +641,127 @@ local function toggleGodMode(state)
     return not state
 end
 
-local function toggleFly(state)
-    if state then
-        stopFlying()
-    else
-        startFlying()
+local function teleportToPosition(position)
+    if player.Character then
+        local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+        if rootPart then
+            rootPart.CFrame = position
+            logDebug("Телепортирован на позицию: " .. tostring(position))
+        end
     end
-    return not state
 end
 
-local function toggleHitbox(state)
-    if state then
-        setHitboxMode(0)
-    else
-        setHitboxMode(1)
-    end
-    return not state
+local function createExplosion(position, radius)
+    local explosion = Instance.new("Explosion")
+    explosion.Position = position
+    explosion.BlastRadius = radius
+    explosion.BlastPressure = 1000000
+    explosion.ExplosionType = Enum.ExplosionType.CratersAndDebris
+    explosion.Parent = Workspace
+    logDebug("Создан взрыв радиусом: " .. radius)
 end
 
-local function toggleInfiniteJump(state)
-    if state then
-        -- Отключаем бесконечный прыжок
-    else
-        infiniteJump()
-    end
-    return not state
-end
-
-local function toggleGhostMode(state)
-    if state then
-        if player.Character then
-            for _, part in ipairs(player.Character:GetDescendants()) do
-                if part:IsA("BasePart") then
-                    part.Transparency = 0
-                    part.CanCollide = true
-                end
+local function rainbowCharacter()
+    if player.Character then
+        for _, part in ipairs(player.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                spawn(function()
+                    while part.Parent do
+                        part.Color = Color3.new(math.random(), math.random(), math.random())
+                        wait(0.1)
+                    end
+                end)
             end
         end
-    else
-        ghostMode()
     end
-    return not state
+    logDebug("Радужный эффект включен")
 end
 
-local function toggleESP(state)
-    if state then
-        removeESP()
-    else
-        espPlayers()
+local function freezeMap()
+    for _, part in ipairs(Workspace:GetDescendants()) do
+        if part:IsA("BasePart") and part.Anchored == false then
+            part.Anchored = true
+            part.Color = Color3.new(0.5, 0.5, 1)
+        end
     end
-    return not state
+    logDebug("Карта заморожена")
+end
+
+local function unfreezeMap()
+    for _, part in ipairs(Workspace:GetDescendants()) do
+        if part:IsA("BasePart") and part.Color == Color3.new(0.5, 0.5, 1) then
+            part.Anchored = false
+            part.Color = Color3.new(1, 1, 1)
+        end
+    end
+    logDebug("Карта разморожена")
+end
+
+local function createBlackHole(position)
+    local blackHole = Instance.new("Part")
+    blackHole.Position = position
+    blackHole.Size = Vector3.new(5, 5, 5)
+    blackHole.Shape = Enum.PartType.Ball
+    blackHole.Color = Color3.new(0, 0, 0)
+    blackHole.Material = EnumMaterial.Neon
+    blackHole.Anchored = false
+    blackHole.CanCollide = false
+    blackHole.Parent = Workspace
+    
+    local bodyForce = Instance.new("BodyForce")
+    bodyForce.Force = Vector3.new(0, blackHole:GetMass() * Workspace.Gravity, 0)
+    bodyForce.Parent = blackHole
+    
+    spawn(function()
+        while blackHole.Parent do
+            for _, part in ipairs(Workspace:GetDescendants()) do
+                if part:IsA("BasePart") and part ~= blackHole and part.Position:Distance(blackHole.Position) < 50 then
+                    local direction = (blackHole.Position - part.Position).Unit
+                    part.Velocity = direction * 100
+                end
+            end
+            wait(0.1)
+        end
+    end)
+    
+    logDebug("Черная дыра создана")
+end
+
+-- Состояния функций
+local activeStates = {
+    Fly = false,
+    Noclip = false,
+    GodMode = false,
+    ESP = false
+}
+
+-- Переработанная функция для кнопок с состоянием
+local function createStateButton(content, name, func, stateKey)
+    local btn, updateState = createButton(name, 25, true)
+    btn.Parent = content
+    
+    -- Инициализируем состояние
+    updateState(activeStates[stateKey])
+    
+    btn.MouseButton1Click:Connect(function()
+        activeStates[stateKey] = func(activeStates[stateKey])
+        updateState(activeStates[stateKey])
+    end)
+    
+    return btn
+end
+
+-- Функция для обычных кнопок (без состояния)
+local function addButton(content, name, func)
+    local btn = createButton(name, 25, false)
+    btn.Parent = content
+    btn.MouseButton1Click:Connect(func)
+    return btn
 end
 
 -- Основные функции
 addButton(mainContent, "Обновить список игроков", updatePlayerList)
-addButton(mainContent, "Убить выбранных игроков", function()
+addButton(mainContent, "Убить выбранных", function()
     for plr, _ in pairs(selectedPlayers) do
         if plr.Character then
             local humanoid = plr.Character:FindFirstChild("Humanoid")
@@ -1018,7 +773,7 @@ addButton(mainContent, "Убить выбранных игроков", function(
     logDebug("Убиты выбранные игроки")
 end)
 
-addButton(mainContent, "Телепортироваться к игроку", function()
+addButton(mainContent, "Телепорт к игроку", function()
     local target
     for plr, _ in pairs(selectedPlayers) do
         target = plr
@@ -1050,34 +805,44 @@ end)
 
 addButton(mainContent, "Заблокировать выбранных", freezeSelectedPlayers)
 addButton(mainContent, "Разблокировать выбранных", unfreezeSelectedPlayers)
-addButton(mainContent, "Телепорт вперед", teleportToPosition)
-addButton(mainContent, "Создать транспорт", spawnVehicle)
-addButton(mainContent, "Удалить всё", deleteAllObjects)
-addButton(mainContent, "Создать взрыв", createExplosion)
-addButton(mainContent, "Заморозить мир", freezeWorld)
-addButton(mainContent, "Разморозить мир", unfreezeWorld)
+
+-- НОВЫЕ КНОПКИ
+addButton(mainContent, "Создать взрыв", function()
+    if player.Character then
+        local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+        if rootPart then
+            createExplosion(rootPart.Position, 20)
+        end
+    end
+end)
+
+addButton(mainContent, "Телепорт на спавн", function()
+    teleportToPosition(CFrame.new(0, 100, 0))
+end)
+
+addButton(mainContent, "Заморозить карту", freezeMap)
+addButton(mainContent, "Разморозить карту", unfreezeMap)
 
 -- Кнопки с состоянием
-createStateButton(mainContent, "Летание", toggleFly, "Fly")
-createStateButton(mainContent, "Ноклип", toggleNoclip, "Noclip")
-createStateButton(mainContent, "Бессмертие", toggleGodMode, "GodMode")
-createStateButton(mainContent, "Бесконечный прыжок", toggleInfiniteJump, "InfiniteJump")
-createStateButton(mainContent, "Режим призрака", toggleGhostMode, "GhostMode")
+createStateButton(mainContent, "Летание", function(state)
+    if state then
+        stopFlying()
+    else
+        startFlying()
+    end
+    return not state
+end, "Fly")
 
--- Визуальные функции
-createStateButton(visualContent, "Показать хитбоксы", toggleHitbox, "Hitbox")
-createStateButton(visualContent, "Показать ESP", toggleESP, "ESP")
+createStateButton(mainContent, "Ноклип", noclip, "Noclip")
+createStateButton(mainContent, "Бессмертие", godMode, "GodMode")
+createStateButton(mainContent, "Бесконечный прыжок", function(state)
+    if not state then
+        infiniteJump()
+    end
+    return true
+end, "InfiniteJump")
 
-addButton(visualContent, "Режим хитбоксов: Весь", function()
-    setHitboxMode(1)
-    logDebug("Хитбоксы: весь персонаж")
-end)
-
-addButton(visualContent, "Режим хитбоксов: Части", function()
-    setHitboxMode(2)
-    logDebug("Хитбоксы: части тела")
-end)
-
+-- Визуальные функции (вкладка "Визуал")
 addButton(visualContent, "Скорость x2", function()
     speedHack(32)
 end)
@@ -1094,61 +859,44 @@ addButton(visualContent, "Ночь", function()
     setTimeOfDay(0)
 end)
 
-addButton(visualContent, "Гравитация Луны", function()
+addButton(visualContent, "Лунная гравитация", function()
     changeGravity(10)
 end)
 
--- Дебаг-функции
-addButton(debugContent, "Показать геометрию коллизий", showCollisionGeometry)
-addButton(debugContent, "Показать владельцев объектов", showNetworkOwners)
-addButton(debugContent, "Показать группы физики", showPhysicsGroups)
-addButton(debugContent, "Дамп иерархии Workspace", function()
-    logDebug("Начало дампа иерархии Workspace...")
-    dumpInstanceTree(Workspace)
-    logDebug("Дамп иерархии Workspace завершен")
-end)
-addButton(debugContent, "Тест сетевой задержки", testNetworkLatency)
-addButton(debugContent, "Стресс-тест производительности", stressTestPerformance)
-addButton(debugContent, "Создать 100 кубов", function()
-    for i = 1, 100 do
-        local part = Instance.new("Part")
-        part.Position = Vector3.new(math.random(-50, 50), 10, math.random(-50, 50))
-        part.Parent = Workspace
+addButton(visualContent, "Радужный персонаж", rainbowCharacter)
+addButton(visualContent, "Создать черную дыру", function()
+    if player.Character then
+        local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+        if rootPart then
+            createBlackHole(rootPart.Position + rootPart.CFrame.LookVector * 10)
+        end
     end
-    logDebug("Создано 100 кубов")
 end)
 
--- Настройки
-local settings = {
-    AutoOpen = true,
-    ThemeColor = Color3.fromRGB(0, 14, 122)
-}
+createStateButton(visualContent, "Показать ESP", function(state)
+    if state then
+        removeESP()
+    else
+        espPlayers()
+    end
+    return not state
+end, "ESP")
 
-local function createSetting(name)
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, 0, 0, 30)
-    frame.BackgroundTransparency = 1
-
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(0.6, 0, 1, 0)
-    label.Text = name
-    label.TextColor3 = Color3.new(0, 0, 0)
-    label.Font = Enum.Font.SourceSans
-    label.TextSize = 14
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.BackgroundTransparency = 1
-    label.Parent = frame
-
-    return frame
-end
-
-local autoOpenSetting = createSetting("Авто-открытие при запуске")
-autoOpenSetting.Visible = false
+-- Настройки (вкладка "Настройки")
+local autoOpenSetting = Instance.new("Frame")
+autoOpenSetting.Size = UDim2.new(1, 0, 0, 25)
+autoOpenSetting.BackgroundTransparency = 1
 autoOpenSetting.Parent = settingsContent
 
-local flySpeedSetting = createSetting("Скорость полёта: " .. flySpeed)
-flySpeedSetting.Visible = false
-flySpeedSetting.Parent = settingsContent
+local autoOpenLabel = Instance.new("TextLabel")
+autoOpenLabel.Size = UDim2.new(0.6, 0, 1, 0)
+autoOpenLabel.Text = "Авто-открытие при запуске"
+autoOpenLabel.TextColor3 = Color3.new(0, 0, 0)
+autoOpenLabel.Font = Enum.Font.SourceSans
+autoOpenLabel.TextSize = 12
+autoOpenLabel.TextXAlignment = Enum.TextXAlignment.Left
+autoOpenLabel.BackgroundTransparency = 1
+autoOpenLabel.Parent = autoOpenSetting
 
 local autoOpenToggle = Instance.new("TextButton")
 autoOpenToggle.Size = UDim2.new(0.3, 0, 0.7, 0)
@@ -1157,7 +905,7 @@ autoOpenToggle.Text = settings.AutoOpen and "ON" or "OFF"
 autoOpenToggle.TextColor3 = settings.AutoOpen and Color3.new(0, 0.5, 0) or Color3.new(0.5, 0, 0)
 autoOpenToggle.BackgroundColor3 = Color3.fromRGB(236, 233, 216)
 autoOpenToggle.BorderColor3 = Color3.new(0, 0, 0)
-autoOpenToggle.Visible = false
+autoOpenToggle.Visible = true
 autoOpenToggle.Parent = autoOpenSetting
 
 autoOpenToggle.MouseButton1Click:Connect(function()
@@ -1167,15 +915,42 @@ autoOpenToggle.MouseButton1Click:Connect(function()
     logDebug("Авто-открытие: " .. (settings.AutoOpen and "включено" or "выключено"))
 end)
 
+local flySpeedSetting = Instance.new("Frame")
+flySpeedSetting.Size = UDim2.new(1, 0, 0, 25)
+flySpeedSetting.BackgroundTransparency = 1
+flySpeedSetting.Parent = settingsContent
+
 local flySpeedLabel = Instance.new("TextLabel")
-flySpeedLabel.Size = UDim2.new(0.3, 0, 0.7, 0)
-flySpeedLabel.Position = UDim2.new(0.65, 0, 0.15, 0)
-flySpeedLabel.Text = tostring(flySpeed)
+flySpeedLabel.Size = UDim2.new(0.6, 0, 1, 0)
+flySpeedLabel.Text = "Скорость полёта: " .. flySpeed
 flySpeedLabel.TextColor3 = Color3.new(0, 0, 0)
-flySpeedLabel.BackgroundColor3 = Color3.fromRGB(236, 233, 216)
-flySpeedLabel.BorderColor3 = Color3.new(0, 0, 0)
-flySpeedLabel.Visible = false
+flySpeedLabel.Font = Enum.Font.SourceSans
+flySpeedLabel.TextSize = 12
+flySpeedLabel.TextXAlignment = Enum.TextXAlignment.Left
+flySpeedLabel.BackgroundTransparency = 1
 flySpeedLabel.Parent = flySpeedSetting
+
+local flySpeedInput = Instance.new("TextBox")
+flySpeedInput.Size = UDim2.new(0.3, 0, 0.7, 0)
+flySpeedInput.Position = UDim2.new(0.65, 0, 0.15, 0)
+flySpeedInput.Text = tostring(flySpeed)
+flySpeedInput.TextColor3 = Color3.new(0, 0, 0)
+flySpeedInput.BackgroundColor3 = Color3.fromRGB(236, 233, 216)
+flySpeedInput.BorderColor3 = Color3.new(0, 0, 0)
+flySpeedInput.Visible = true
+flySpeedInput.Parent = flySpeedSetting
+
+flySpeedInput.FocusLost:Connect(function()
+    local newSpeed = tonumber(flySpeedInput.Text)
+    if newSpeed and newSpeed > 0 then
+        flySpeed = newSpeed
+        settings.FlySpeed = newSpeed
+        flySpeedLabel.Text = "Скорость полёта: " .. newSpeed
+        logDebug("Скорость полёта изменена: " .. newSpeed)
+    else
+        flySpeedInput.Text = tostring(flySpeed)
+    end
+end)
 
 -- Анимация открытия окна
 local function openWindow()
@@ -1187,9 +962,6 @@ local function openWindow()
             titleBar.Visible = true
         elseif i == 2 then
             titleLabel.Visible = true
-        elseif i == 3 then
-            minimizeBtn.Visible = true
-            closeBtn.Visible = true
         elseif i == 4 then
             tabBar.Visible = true
         elseif i == 5 then
@@ -1240,9 +1012,6 @@ local function closeWindow()
             settingsTab.Visible = false
         elseif i == 4 then
             tabBar.Visible = false
-        elseif i == 3 then
-            minimizeBtn.Visible = false
-            closeBtn.Visible = false
         elseif i == 2 then
             titleLabel.Visible = false
         elseif i == 1 then
@@ -1271,50 +1040,24 @@ taskbarButton.MouseButton1Click:Connect(function()
 end)
 
 -- Переключение вкладок
-mainTab.MouseButton1Click:Connect(function()
-    mainContent.Visible = true
-    playerContent.Visible = false
-    visualContent.Visible = false
-    debugContent.Visible = false
-    settingsContent.Visible = false
-end)
+local function switchTab(content)
+    mainContent.Visible = (content == mainContent)
+    playerContent.Visible = (content == playerContent)
+    visualContent.Visible = (content == visualContent)
+    debugContent.Visible = (content == debugContent)
+    settingsContent.Visible = (content == settingsContent)
+end
 
-playerTab.MouseButton1Click:Connect(function()
-    mainContent.Visible = false
-    playerContent.Visible = true
-    visualContent.Visible = false
-    debugContent.Visible = false
-    settingsContent.Visible = false
-end)
-
-visualTab.MouseButton1Click:Connect(function()
-    mainContent.Visible = false
-    playerContent.Visible = false
-    visualContent.Visible = true
-    debugContent.Visible = false
-    settingsContent.Visible = false
-end)
-
-debugTab.MouseButton1Click:Connect(function()
-    mainContent.Visible = false
-    playerContent.Visible = false
-    visualContent.Visible = false
-    debugContent.Visible = true
-    settingsContent.Visible = false
-end)
-
-settingsTab.MouseButton1Click:Connect(function()
-    mainContent.Visible = false
-    playerContent.Visible = false
-    visualContent.Visible = false
-    debugContent.Visible = false
-    settingsContent.Visible = true
-end)
+mainTab.MouseButton1Click:Connect(function() switchTab(mainContent) end)
+playerTab.MouseButton1Click:Connect(function() switchTab(playerContent) end)
+visualTab.MouseButton1Click:Connect(function() switchTab(visualContent) end)
+debugTab.MouseButton1Click:Connect(function() switchTab(debugContent) end)
+settingsTab.MouseButton1Click:Connect(function() switchTab(settingsContent) end)
 
 -- Перетаскивание окна
 local dragging = false
 local dragOffset = Vector2.new(0, 0)
-local dragStartPos = UDim2.new(0.5, -300, 0.5, -350)
+local dragStartPos = UDim2.new(0.5, -225, 0.5, -250)
 
 titleBar.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -1361,5 +1104,5 @@ end)
 
 -- Инициализация дебаг-лога
 logDebug("Админ-панель инициализирована")
-logDebug("Версия: Reborn v1.5")
+logDebug("Версия: Ultimate v2.0")
 logDebug("Игрок: " .. player.Name)
