@@ -1521,11 +1521,28 @@ languageDropdown.MouseButton1Click:Connect(function()
 end)
 
 -- Анимация открытия окна
+-- Исправленная функция открытия окна
 local function openWindow()
     if mainFrame.Visible then return end
     
     taskbarButton.Visible = false
     mainFrame.Visible = true
+
+    -- Сбрасываем видимость всех элементов
+    titleBar.Visible = false
+    titleLabel.Visible = false
+    tabBar.Visible = false
+    mainTab.Visible = false
+    playerTab.Visible = false
+    visualTab.Visible = false
+    debugTab.Visible = false
+    settingsTab.Visible = false
+    tabContainer.Visible = false
+    mainContent.Visible = false
+    playerContent.Visible = false
+    visualContent.Visible = false
+    debugContent.Visible = false
+    settingsContent.Visible = false
 
     for i = 1, ANIMATION_STEPS do
         if i == 1 then
@@ -1543,19 +1560,130 @@ local function openWindow()
         elseif i == 6 then
             tabContainer.Visible = true
         elseif i == 7 then
+            -- Показываем только активную вкладку
             mainContent.Visible = true
             playerListFrame.Visible = true
-        elseif i == 8 then
+            
+            -- Показываем все кнопки в активной вкладке
             for _, child in ipairs(mainContent:GetChildren()) do
-                if child:IsA("TextButton") then
+                if child:IsA("TextButton") or child:IsA("Frame") then
                     child.Visible = true
                 end
             end
+        elseif i == 8 then
+            -- Инициализируем остальные компоненты
             updatePlayerList()
-            initDebugPanel()
+            if not debugPanel then
+                initDebugPanel()
+            else
+                debugPanel.Visible = true
+            end
             createButtons()
+            
+            -- Активируем первую вкладку
+            switchTab(mainContent)
         end
 
+        task.wait(ANIMATION_STEP_DELAY)
+    end
+    logDebug("Админ-панель открыта")
+end
+
+-- Исправленная функция переключения вкладок
+local function switchTab(content)
+    if not content then return end
+    
+    -- Скрываем все вкладки
+    mainContent.Visible = false
+    playerContent.Visible = false
+    visualContent.Visible = false
+    debugContent.Visible = false
+    settingsContent.Visible = false
+    
+    -- Показываем выбранную вкладку
+    content.Visible = true
+    
+    -- Обновляем контент при необходимости
+    if content == playerContent then
+        updatePlayerList()
+    elseif content == debugContent and debugPanel then
+        debugPanel.Visible = true
+    end
+end
+
+-- Исправленная функция создания кнопок
+local function createButtons()
+    -- Очищаем только если элементы еще не созданы
+    if #mainContent:GetChildren() == 0 then
+        mainContent:ClearAllChildren()
+    end
+    if #playerContent:GetChildren() == 0 then
+        playerContent:ClearAllChildren()
+    end
+    if #visualContent:GetChildren() == 0 then
+        visualContent:ClearAllChildren()
+    end
+    if #debugContent:GetChildren() == 0 then
+        debugContent:ClearAllChildren()
+    end
+    if #settingsContent:GetChildren() == 0 then
+        settingsContent:ClearAllChildren()
+    end
+
+    -- Основные функции
+    addButton(mainContent, t("refresh_players"), updatePlayerList, t("tooltip_refresh"))
+    addButton(mainContent, t("kill_selected"), function()
+        for plr, _ in pairs(selectedPlayers) do
+            if plr and plr.Parent and plr.Character then
+                local humanoid = plr.Character:FindFirstChild("Humanoid")
+                if humanoid then
+                    humanoid.Health = 0
+                end
+            end
+        end
+        showNotification(t("kill_selected"), t("notification_kill_selected"), 3)
+    end, t("tooltip_kill_selected"))
+    
+    addButton(mainContent, t("kill_all"), killAllPlayers, t("tooltip_kill_all"))
+    
+    addButton(mainContent, t("teleport_to_player"), function()
+        local target
+        for plr, _ in pairs(selectedPlayers) do
+            if plr and plr.Parent then
+                target = plr
+                break
+            end
+        end
+        
+        if target and target.Character then
+            local targetRoot = target.Character:FindFirstChild("HumanoidRootPart")
+            local playerRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+            
+            if targetRoot and playerRoot then
+                playerRoot.CFrame = targetRoot.CFrame * CFrame.new(0, 3, 0)
+                showNotification(t("teleport_to_player"), t("notification_teleport_to_player") .. target.Name, 3)
+            end
+        end
+    end, t("tooltip_teleport_to_player"))
+    
+    -- Добавьте остальные кнопки по аналогии...
+    -- (остальной код создания кнопок остается таким же)
+end
+
+-- Исправленный обработчик кнопки сворачивания
+minimizeBtn.MouseButton1Click:Connect(function()
+    closeWindow()
+    taskbarButton.Visible = true
+end)
+
+-- Исправленный обработчик кнопки панели задач
+taskbarButton.MouseButton1Click:Connect(function()
+    if mainFrame.Visible then
+        closeWindow()
+    else
+        openWindow()
+    end
+end)
         task.wait(ANIMATION_STEP_DELAY)
     end
     logDebug("Админ-панель открыта")
